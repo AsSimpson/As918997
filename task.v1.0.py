@@ -7,8 +7,13 @@ def quit():
 
 
 def generate_random():
-    random_number = random.randint(10, 20)
-    Label(main_window, text=random_number) .grid(column=0, row=2, sticky=E)
+    random_number1 = random.randint(1, 10)
+    Label(main_window, text=random_number1).grid(column=0, row=1, sticky=E)
+    if random_number1 == 6:
+        print("We got 6")
+
+    random_number2 = random.randint(1, 10)
+    Label(main_window, text=random_number2) .grid(column=1, row=1, sticky=E)
 
 
 def main():
