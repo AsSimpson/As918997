@@ -10,10 +10,12 @@ def generate_random():
     random_number1 = random.randint(1, 10)
     Label(main_window, text=random_number1).grid(column=0, row=1, sticky=E)
     if random_number1 == 6:
-        print("We got 6")
+        print("We got 6 on left side. ")
 
     random_number2 = random.randint(1, 10)
     Label(main_window, text=random_number2) .grid(column=1, row=1, sticky=E)
+    if random_number2 == 6:
+        print("We got 6 on right side. ")
 
 
 def main():
