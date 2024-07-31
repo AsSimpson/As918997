@@ -6,16 +6,16 @@ from tkinter import *
 def quit():
     main_window.destroy()
 
-
+ 
 # print details of all the items
 def print_items_details():
     name_count = 0
     # Create the column headings
-    Label(main_window, font=("Helvetica 10 bold"), text="Row").grid(column=0, row=7)
-    Label(main_window, font=("Helvetica 10 bold"), text="Name").grid(column=1, row=7)
-    Label(main_window, font=("Helvetica 10 bold"), text="Items Hired").grid(column=2, row=7)
-    Label(main_window, font=("Helvetica 10 bold"), text="Receipt Number").grid(column=3, row=7)
-    Label(main_window, font=("Helvetica 10 bold"), text="Items Number").grid(column=4, row=7)
+    Label(main_window, font=("Helvetica", 10, "bold"), text="Row").grid(column=0, row=7)
+    Label(main_window, font=("Helvetica", 10, "bold"), text="Name").grid(column=1, row=7)
+    Label(main_window, font=("Helvetica", 10, "bold"), text="Items Hired").grid(column=2, row=7)
+    Label(main_window, font=("Helvetica", 10, "bold"), text="Receipt Number").grid(column=3, row=7)
+    Label(main_window, font=("Helvetica", 10, "bold"), text="Items Number").grid(column=4, row=7)
     # Add each item in the list into its own row
     while name_count < counters['total_entries']:
         Label(main_window, text=name_count).grid(column=0, row=name_count + 8)
@@ -117,7 +117,7 @@ def setup_buttons():
 # start the program running
 def main():
     # Start the GUI
-    main_window.geometry("500x300")
+    main_window.geometry("780x400")
     setup_buttons()
     main_window.mainloop()
 
