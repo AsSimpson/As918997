@@ -4,23 +4,18 @@ window =tk.Tk()
 window.title('my window')
 window.geometry('200x200')
 
-# define a string var named 'var1' and attach it to the label 'l'
-var=tk.StringVar()
+# create a label for print_selection
 l=tk.Label(window,bg='yellow',width=20)
 l.pack()
 
-def print_selection():
-    l.config(text='You have selected ' + var.get())
+# define a function to print the outcome
+def print_selection(v):
+    l.config(text='You have selected ' + v)
 
-# create 3 radio button named 'r1', 'r2', 'r3'
-r1 = tk.Radiobutton(window, text = 'Option A', variable=var, value='A', command = print_selection)
-r1.pack()
-
-r2 = tk.Radiobutton(window, text = 'Option B', variable=var, value='B', command = print_selection)
-r2.pack()
-
-r3 = tk.Radiobutton(window, text = 'Option C', variable=var, value='C', command = print_selection)
-r3.pack()
+# add scale widget
+s = tk.Scale(window,label='try me', from_=5, to=11,orient=tk.HORIZONTAL,length=200,
+             showvalue=0,tickinterval=3,resolution=0.01,command=print_selection)
+s.pack()
 
 # refresh the program when it is over
 window.mainloop()
