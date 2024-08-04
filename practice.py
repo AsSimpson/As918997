@@ -5,33 +5,22 @@ window.title('my window')
 window.geometry('200x200')
 
 # define a string var named 'var1' and attach it to the label 'l'
-var1=tk.StringVar()
-l=tk.Label(window,bg='yellow',width=4,textvariable=var1)
+var=tk.StringVar()
+l=tk.Label(window,bg='yellow',width=20)
 l.pack()
 
-# define a function
-def print_seletion():
-    value=lb.get(lb.curselection())
-    var1.set(value)
+def print_selection():
+    l.config(text='You have selected ' + var.get())
 
-# create a button and attach the function define before to it
-b1=tk.Button(window,text='insert point',width=15,height=2,command=print_seletion)
-b1.pack()
+# create 3 radio button named 'r1', 'r2', 'r3'
+r1 = tk.Radiobutton(window, text = 'Option A', variable=var, value='A', command = print_selection)
+r1.pack()
 
-# define a string variable 'var2' set its value as a set
-var2=tk.StringVar()
-var2.set((11,4,5,14))
+r2 = tk.Radiobutton(window, text = 'Option B', variable=var, value='B', command = print_selection)
+r2.pack()
 
-# create a list to hold set 'var2'
-lb=tk.Listbox(window,listvariable=var2)
-# set down the arrangement in the list
-list_items=[1,2,3,4]
-for item in list_items:
-    lb.insert('end',item)
-lb.insert(1,'frist')
-lb.insert(2,'second')
-lb.delete(2)
-lb.pack()
+r3 = tk.Radiobutton(window, text = 'Option C', variable=var, value='C', command = print_selection)
+r3.pack()
 
 # refresh the program when it is over
 window.mainloop()
