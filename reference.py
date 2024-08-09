@@ -2,11 +2,6 @@
 from tkinter import *
 
 
-# quit subroutine
-def quit():
-    main_window.destroy()
-
- 
 # print details of all the items
 def print_items_details():
     name_count = 0
