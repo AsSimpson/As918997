@@ -1,21 +1,13 @@
 import tkinter as tk
-# create a desktop window whose size is '200x200'
-window =tk.Tk()
-window.title('my window')
-window.geometry('200x200')
+import tkinter.font as tkFont
 
-# create a label for print_selection
-l=tk.Label(window,bg='yellow',width=20)
-l.pack()
+root = tk.Tk()
+root.geometry("500x300")
+# Create fonts with different weights and slants
+normal_font = tkFont.Font(family="Agency FB", size=40, weight=tkFont.NORMAL)
 
-# define a function to print the outcome
-def print_selection(v):
-    l.config(text='You have selected ' + v)
+# Create labels using different font styles
+label = tk.Label(root, text="Normal Text", font=normal_font)
+label.pack()
 
-# add scale widget
-s = tk.Scale(window,label='try me', from_=5, to=11,orient=tk.HORIZONTAL,length=200,
-             showvalue=0,tickinterval=3,resolution=0.01,command=print_selection)
-s.pack()
-
-# refresh the program when it is over
-window.mainloop()
+root.mainloop()
