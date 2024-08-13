@@ -1,32 +1,30 @@
 from tkinter import *
 import os
-import tkinter.font as tkFont
-
 
 def print_items_details():
     name_count = 0
     # Create the column headings with color
-    Label(root, font=normal_font, text="Row", fg="white", bg="black", relief="solid", bd=5).grid(
+    Label(root, font=("Helvetica", 12, "bold"), text="Row", fg="white", bg="black", relief="solid", bd=5).grid(
         column=0, row=7, padx=5, pady=5)
-    Label(root, font=normal_font, text="Name", fg="white", bg="black", relief="sunken", bd=5).grid(
+    Label(root, font=("Helvetica", 12, "bold"), text="Name", fg="white", bg="black", relief="sunken", bd=5).grid(
         column=1, row=7, padx=5, pady=5)
-    Label(root, font=normal_font, text="Items Hired", fg="white", bg="black", relief="ridge",
+    Label(root, font=("Helvetica", 12, "bold"), text="Items Hired", fg="white", bg="black", relief="ridge",
           bd=5).grid(column=2, row=7, padx=5, pady=5)
-    Label(root, font=normal_font, text="Receipt Number", fg="white", bg="black", relief="groove",
+    Label(root, font=("Helvetica", 12, "bold"), text="Receipt Number", fg="white", bg="black", relief="groove",
           bd=5).grid(column=3, row=7, padx=5, pady=5)
-    Label(root, font=normal_font, text="Items Hired", fg="white", bg="black", relief="raised",
+    Label(root, font=("Helvetica", 12, "bold"), text="Items Hired", fg="white", bg="black", relief="raised",
           bd=5).grid(column=4, row=7, padx=5, pady=5)
     # Add each item in the list into its own row
     while name_count < counters['total_entries']:
-        Label(root, text=name_count, relief="sunken", font=("Arial", 10), fg="blue", bg="white").grid(
+        Label(root, text=name_count, relief="sunken", font=("Helvetica", 10), fg="blue", bg="white").grid(
             column=0, row=name_count + 8, padx=5, pady=5)
-        Label(root, text=(Items_details[name_count][0]), relief="sunken", font=("Arial", 10), fg="blue",
+        Label(root, text=(Items_details[name_count][0]), relief="sunken", font=("Helvetica", 10), fg="blue",
               bg="white").grid(column=1, row=name_count + 8, padx=5, pady=5)
-        Label(root, text=(Items_details[name_count][1]), relief="sunken", font=("Arial", 10), fg="blue",
+        Label(root, text=(Items_details[name_count][1]), relief="sunken", font=("Helvetica", 10), fg="blue",
               bg="white").grid(column=2, row=name_count + 8, padx=5, pady=5)
-        Label(root, text=(Items_details[name_count][2]), relief="sunken", font=("Arial", 10), fg="blue",
+        Label(root, text=(Items_details[name_count][2]), relief="sunken", font=("Helvetica", 10), fg="blue",
               bg="white").grid(column=3, row=name_count + 8, padx=5, pady=5)
-        Label(root, text=(Items_details[name_count][3]), relief="sunken", font=("Arial", 10), fg="blue",
+        Label(root, text=(Items_details[name_count][3]), relief="sunken", font=("Helvetica", 10), fg="blue",
               bg="white").grid(column=4, row=name_count + 8, padx=5, pady=5)
         name_count += 1
         counters['name_count'] = name_count
@@ -135,16 +133,17 @@ def delete_receipt_file(receipt_number):
 # Create the buttons and labels
 def setup_buttons():
     # Create all the labels, buttons, and entry boxes. Put them in the correct grid location
-    Label(root, text="Name", bg="lightblue", font=normal_font).grid(column=0, row=0, padx=20, pady=20, sticky=E)
-    Label(root, text="Items Hired", bg="lightblue", font=normal_font).grid(column=0, row=1, padx=20, pady=12, sticky=E)
-    Button(root, text="Quit", command=quit, width=10, font=normal_font).grid(column=4, row=0, padx=20, pady=12, sticky=E)
-    Button(root, text="Append Details", font=normal_font).grid(column=3, row=1, padx=12, pady=12)
-    Button(root, text="Print Details", command=print_items_details, width=10, font=normal_font).grid(column=4, row=1, padx=20,
+    Label(root, text="Name", bg="lightblue").grid(column=0, row=0, padx=20, pady=20, sticky=E)
+    Label(root, text="Items Hired", bg="lightblue").grid(column=0, row=1, padx=20, pady=12, sticky=E)
+    Button(root, text="Quit", command=quit, width=10).grid(column=4, row=0, padx=20, pady=12, sticky=E)
+    Button(root, text="Append Details", command=check_inputs).grid(column=3, row=1, padx=12, pady=12)
+    Button(root, text="Print Details", command=print_items_details, width=10).grid(column=4, row=1, padx=20,
                                                                                           pady=12, sticky=E)
-    Label(root, text="Receipt Number", bg="lightblue", font=normal_font).grid(column=0, row=2, padx=20, pady=12, sticky=E)
-    Label(root, text="Items Number", bg="lightblue", font=normal_font).grid(column=0, row=3, padx=20, pady=12, sticky=E)
-    Button(root, text="Delete Row", width=10, font=normal_font).grid(column=4, row=3, padx=20, pady=12, sticky=E)
-
+    Label(root, text="Receipt Number", bg="lightblue").grid(column=0, row=2, padx=20, pady=12, sticky=E)
+    Label(root, text="Items Number", bg="lightblue").grid(column=0, row=3, padx=20, pady=12, sticky=E)
+    Label(root, text="Row #", bg="lightgray").grid(column=3, row=2, padx=20, pady=20, sticky=E)
+    Button(root, text="Delete Row", command=delete_row, width=10).grid(column=4, row=3, padx=20, pady=12,
+                                                                       sticky=E)
     Label(root, text="               ").grid(column=2, row=0)
 
 
@@ -152,16 +151,14 @@ def main():
     root.geometry("780x400")
     root.title("*" * 50 + "Party Purchase" + "*" * 50)
     # Set the window icon
-    icon_path = r"WallpaperEngineLockOverride_randomAQSNXO.png"  # Ensure you have an 'icon.png' file in the same directory
+    icon_path = r"Linux_logo.png"  # Ensure you have an 'icon.png' file in the same directory
     icon = PhotoImage(file=icon_path)
     root.iconphoto(False, icon)
     # Start the GUI
     setup_buttons()
     root.mainloop()
 
-
-
-
+# from reference
 counters = {'total_entries': 0, 'name_count': 0}
 Items_details = []
 error_labels = [None] * 4
@@ -177,7 +174,5 @@ entry_ItemsNumber = Entry(root)
 entry_ItemsNumber.grid(column=1, row=3)
 delete_item = Entry(root)
 delete_item.grid(column=3, row=3)
-
-normal_font = tkFont.Font(family="Agency FB", size=12, weight=tkFont.NORMAL)
 
 main()
