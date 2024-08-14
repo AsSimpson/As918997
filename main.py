@@ -2,7 +2,9 @@ import os
 import time
 import tkinter.font as tkFont
 from tkinter import *
+from tkinter import ttk
 from tkinter import messagebox
+from messagebox import showinfo
 from tkinter.ttk import Combobox
 
 
@@ -22,7 +24,7 @@ def print_items_details():
           bd=5).grid(column=4, row=7, padx=5, pady=5)
     # Add each item in the list into its own row
     while name_count < counters['total_entries']:
-        Label(root, text=name_count, relief="sunken", font=("Helvetica", 10), fg="blue", bg="white").grid(
+        Label(root, text=name_count + 1, relief="sunken", font=("Helvetica", 10), fg="blue", bg="white").grid(
             column=0, row=name_count + 8, padx=5, pady=5)
         Label(root, text=(Items_details[name_count][0]), relief="sunken", font=fontNum1, fg="blue",
               bg="white").grid(column=1, row=name_count + 8, padx=5, pady=5)
@@ -50,7 +52,7 @@ def check_inputs():
         error_labels[0].grid(column=2, row=0)
         input_check = 1
     # Check that Items Hired is not blank, set error text if blank
-    if len(entry_ItemsHired.get()) == 0:
+    if len(entry_ItemsPurchase.get()) == 0:
         error_labels[1] = Label(root, fg="red", text="Required")
         error_labels[1].grid(column=2, row=1)
         input_check = 1
@@ -91,11 +93,11 @@ def clear_error_messages():
 
 def append_item():
     # Append each item to its own area of the list
-    Items_details.append([entry_Name.get(), entry_ItemsHired.get(), entry_ReciptNumber.get(), entry_ItemsNumber.get()])
+    Items_details.append([entry_Name.get(), entry_ItemsPurchase.get(), entry_ReciptNumber.get(), entry_ItemsNumber.get()])
     save_receipt_to_file(entry_ReciptNumber.get())
     # Clear the entry boxes
     entry_Name.delete(0, 'end')
-    entry_ItemsHired.delete(0, 'end')
+    entry_ItemsPurchase.delete(0, 'end')
     entry_ReciptNumber.delete(0, 'end')
     entry_ItemsNumber.delete(0, 'end')
     counters['total_entries'] += 1
@@ -106,14 +108,14 @@ def save_receipt_to_file(receipt_number):
         os.makedirs('records')
     with open(f'records/{receipt_number}.txt', 'w') as file:
         file.write(f"Name: {entry_Name.get()}\n")
-        file.write(f"Items Hired: {entry_ItemsHired.get()}\n")
+        file.write(f"Items Hired: {entry_ItemsPurchase.get()}\n")
         file.write(f"Receipt Number: {entry_ReciptNumber.get()}\n")
         file.write(f"Items Number: {entry_ItemsNumber.get()}\n")
 
 
 # Delete a row from the list
 def delete_row():
-    row_index = int(delete_item.get())
+    row_index = int(delete_item.get()) - 1
     if 0 <= row_index < counters['total_entries']:
         delete_receipt_file(Items_details[row_index][2])
         del Items_details[row_index]
@@ -121,11 +123,11 @@ def delete_row():
         name_count = counters['name_count']
         delete_item.delete(0, 'end')
         # Clear the last item displayed on the GUI
-        Label(root, text="            ", font=fontNum2).grid(column=0, row=name_count + 7)
-        Label(root, text="            ", font=fontNum2).grid(column=1, row=name_count + 7)
-        Label(root, text="            ", font=fontNum2).grid(column=2, row=name_count + 7)
-        Label(root, text="            ", font=fontNum2).grid(column=3, row=name_count + 7)
-        Label(root, text="            ", font=fontNum2).grid(column=4, row=name_count + 7)
+        Label(root, text="            ", font=fontNum2, bg="lightblue").grid(column=0, row=name_count + 7)
+        Label(root, text="            ", font=fontNum2, bg="lightblue").grid(column=1, row=name_count + 7)
+        Label(root, text="            ", font=fontNum2, bg="lightblue").grid(column=2, row=name_count + 7)
+        Label(root, text="            ", font=fontNum2, bg="lightblue").grid(column=3, row=name_count + 7)
+        Label(root, text="            ", font=fontNum2, bg="lightblue").grid(column=4, row=name_count + 7)
         # Print all the items in the list
         print_items_details()
 
@@ -139,24 +141,36 @@ def delete_receipt_file(receipt_number):
 # Create the buttons and labels
 def setup_buttons():
     # Create all the labels, buttons, and entry boxes. Put them in the correct grid location
+
     Label(root, text="Name", bg="lightblue", font=fontNum1).grid(column=0, row=0, padx=20, pady=20, sticky=E)
     Label(root, text="Items Hired", bg="lightblue", font=fontNum1).grid(column=0, row=1, padx=20, pady=12, sticky=E)
-    Button(root, text="Quit", command=quit, width=10, font=fontNum1).grid(column=4, row=0, padx=20, pady=12, sticky=E)
-    Button(root, text="Append Details", command=check_inputs, font=fontNum1).grid(column=3, row=1, padx=12, pady=12)
-    Button(root, text="Print Details", command=print_items_details, width=15, font=fontNum1).grid(column=4, row=1, padx=20,
-                                                                                          pady=12, sticky=E)
     Label(root, text="Receipt Number", bg="lightblue", font=fontNum1).grid(column=0, row=2, padx=20, pady=12, sticky=E)
     Label(root, text="Items Number", bg="lightblue", font=fontNum1).grid(column=0, row=3, padx=20, pady=12, sticky=E)
-    Button(root, text="Delete Row", command=delete_row, width=10, font=fontNum1).grid(column=4, row=3, padx=20, pady=12,
-                                                                                      sticky=E)
-    Label(root, text="               ").grid(column=2, row=0)
 
+
+
+    Button(root, text="Quit", command=quit, width=10, font=fontNum1).grid(column=0, row=4, padx=20, pady=12, sticky=E)
+    Button(root, text="Append Details", command=check_inputs, font=fontNum1).grid(column=1, row=4, padx=12, pady=12)
+    # Button(root, text="Print Details", command=print_items_details, width=15, font=fontNum1)
+    # Button(root, text="Print Details", image=button_image, compound=LEFT, command=download_clicked).grid(
+    #     column=2, row=4)
+
+
+    Button(root, text="Delete Row", command=delete_row, width=10, font=fontNum1).grid(column=0, row=5, padx=20, pady=12, sticky=E)
+
+def download_clicked():
+    showinfo(
+        title='Information',
+        message='Download button clicked!'
+    )
 
 def main():
     root.geometry("800x500")
     root.title("*" * 50 + "Party Purchase" + "*" * 50)
+    root.configure(bg='lightblue')
+
     # Set the window icon
-    icon_path = r"Linux_logo.png"  # Ensure you have an 'icon.png' file in the same directory
+    icon_path = r"images/Linux_logo.png"  # Ensure you have an 'icon.png' file in the same directory
     icon = PhotoImage(file=icon_path)
     root.iconphoto(False, icon)
     # Start the GUI
@@ -180,16 +194,25 @@ root = Tk()
 # Get purchase information from user input
 entry_Name = Entry(root)
 entry_Name.grid(column=1, row=0)
-entry_ItemsHired = Entry(root)
-entry_ItemsHired.grid(column=1, row=1)
 entry_ReciptNumber = Entry(root)
 entry_ReciptNumber.grid(column=1, row=2)
 entry_ItemsNumber = Entry(root)
 entry_ItemsNumber.grid(column=1, row=3)
 delete_item = Entry(root)
-delete_item.grid(column=3, row=3)
+delete_item.grid(column=1, row=5)
 
+# create combobox
+purchase_list = ['Tables', 'Balloons', 'Party Hats', 'Snacks', 'Drinks', 'Serving Bowls']
+entry_ItemsPurchase = Combobox(root, values=purchase_list, state='readonly')
+entry_ItemsPurchase.grid(column=1, row=1)
+entry_ItemsPurchase.set("Please choose a purchased item name. ")
 
+#   front_frame = Frame
+#   button_image_path = r"printer.png"
+button_image = PhotoImage(file=r"printer.png")
+#   Label(root, image=button_image, bg="lightblue").grid(column=2, row=0)
+Button(root, text="Print Details", image=button_image, compound=LEFT, command=print_items_details).grid(
+    column=2, row=4)
 
 
 
