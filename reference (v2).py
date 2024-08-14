@@ -250,7 +250,7 @@ def appenditems_page():
     add_details_window.geometry("530x440")
 
     # bg_image = PhotoImage(file=r"output-onlinepngtools (2).png")
-    bg_image = PhotoImage(file=r"images/party_image.png")
+    bg_image = PhotoImage(file=r"party_image.png")
     bg_label = Label(add_details_window, image=bg_image)
     bg_label.place(x=0, y=0, relwidth=1, relheight=1)
 
@@ -296,7 +296,7 @@ def return_page():
     delete_details_window.iconphoto(False, icon)
     delete_details_window.geometry("500x400")
 
-    bg_image = PhotoImage(file=r"images/party_image.png")
+    bg_image = PhotoImage(file=r"party_image.png")
     bg_label = Label(delete_details_window, image=bg_image)
     bg_label.place(x=0, y=0, relwidth=1, relheight=1)
 
@@ -324,7 +324,7 @@ def main():
     Main_win.geometry("500x550")
     Main_win.title("John's Item Hire Program")
 
-    icon_path = r"images/Linux_logo.png"
+    icon_path = r"Linux_logo.png"
     icon = PhotoImage(file=icon_path)
     Main_win.iconphoto(False, icon)
 
@@ -333,7 +333,7 @@ def main():
     top_frame.grid(row=0, column=0, sticky="nsew")
     top_frame.grid_propagate(False)
 
-    bg_image = PhotoImage(file=r"images/Linux_logo.png")
+    bg_image = PhotoImage(file=r"Linux_logo.png")
     bg_label = Label(top_frame, image=bg_image)
     bg_label.place(x=0, y=0, relwidth=1, relheight=1)
 

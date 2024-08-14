@@ -11,17 +11,7 @@ from tkinter.ttk import Combobox
 
 def print_items_details():
     name_count = 0
-    # Create the column headings with color
-    Label(root, font=fontNum1, text="Row", fg="white", bg="black", relief="solid", bd=5).grid(
-        column=0, row=7, padx=5, pady=5)
-    Label(root, font=fontNum1, text="Name", fg="white", bg="black", relief="sunken", bd=5).grid(
-        column=1, row=7, padx=5, pady=5)
-    Label(root, font=fontNum1, text="Items Hired", fg="white", bg="black", relief="ridge",
-          bd=5).grid(column=2, row=7, padx=5, pady=5)
-    Label(root, font=fontNum1, text="Receipt Number", fg="white", bg="black", relief="groove",
-          bd=5).grid(column=3, row=7, padx=5, pady=5)
-    Label(root, font=fontNum1, text="Items Hired", fg="white", bg="black", relief="raised",
-          bd=5).grid(column=4, row=7, padx=5, pady=5)
+
     # Add each item in the list into its own row
     while name_count < counters['total_entries']:
         Label(root, text=name_count + 1, relief="sunken", font=("Helvetica", 10), fg="blue", bg="white").grid(
@@ -141,22 +131,30 @@ def delete_receipt_file(receipt_number):
 # Create the buttons and labels
 def setup_buttons():
     # Create all the labels, buttons, and entry boxes. Put them in the correct grid location
+    Label(root, text="Name", bg="lightblue", font=fontNum1).grid(column=0, row=0, padx=10, pady=10, sticky=W)
+    Label(root, text="Items Hired", bg="lightblue", font=fontNum1).grid(column=0, row=1, padx=10, pady=10, sticky=W)
+    Label(root, text="Receipt Number", bg="lightblue", font=fontNum1).grid(column=0, row=2, padx=10, pady=10, sticky=W)
+    Label(root, text="Items Number", bg="lightblue", font=fontNum1).grid(column=0, row=3, padx=10, pady=10, sticky=W)
 
-    Label(root, text="Name", bg="lightblue", font=fontNum1).grid(column=0, row=0, padx=20, pady=20, sticky=E)
-    Label(root, text="Items Hired", bg="lightblue", font=fontNum1).grid(column=0, row=1, padx=20, pady=12, sticky=E)
-    Label(root, text="Receipt Number", bg="lightblue", font=fontNum1).grid(column=0, row=2, padx=20, pady=12, sticky=E)
-    Label(root, text="Items Number", bg="lightblue", font=fontNum1).grid(column=0, row=3, padx=20, pady=12, sticky=E)
+    # Create the column headings with color
+    Label(root, font=fontNum1, text="Row", fg="white", bg="black", relief="solid", bd=5).grid(
+        column=0, row=7, padx=5, pady=5)
+    Label(root, font=fontNum1, text="Name", fg="white", bg="black", relief="sunken", bd=5).grid(
+        column=1, row=7, padx=5, pady=5)
+    Label(root, font=fontNum1, text="Items Hired", fg="white", bg="black", relief="ridge",
+          bd=5).grid(column=2, row=7, padx=5, pady=5)
+    Label(root, font=fontNum1, text="Receipt Number", fg="white", bg="black", relief="groove",
+          bd=5).grid(column=3, row=7, padx=5, pady=5)
+    Label(root, font=fontNum1, text="Items Hired", fg="white", bg="black", relief="raised",
+          bd=5).grid(column=4, row=7, padx=5, pady=5)
 
 
-
-    Button(root, text="Quit", command=quit, width=10, font=fontNum1).grid(column=0, row=4, padx=20, pady=12, sticky=E)
+    # Button(root, text="Quit", command=quit, width=10, font=fontNum1).grid(column=0, row=4, padx=20, pady=12, sticky=E)
     Button(root, text="Append Details", command=check_inputs, font=fontNum1).grid(column=1, row=4, padx=12, pady=12)
-    # Button(root, text="Print Details", command=print_items_details, width=15, font=fontNum1)
-    # Button(root, text="Print Details", image=button_image, compound=LEFT, command=download_clicked).grid(
-    #     column=2, row=4)
 
 
-    Button(root, text="Delete Row", command=delete_row, width=10, font=fontNum1).grid(column=0, row=5, padx=20, pady=12, sticky=E)
+
+    Button(root, text="Delete Row", command=delete_row, width=10, bg='red', font=fontNum1).grid(column=0, row=5, padx=20, pady=12, sticky=E)
 
 def download_clicked():
     showinfo(
@@ -165,12 +163,12 @@ def download_clicked():
     )
 
 def main():
-    root.geometry("800x500")
+    root.geometry("800x600")
     root.title("*" * 50 + "Party Purchase" + "*" * 50)
     root.configure(bg='lightblue')
 
     # Set the window icon
-    icon_path = r"images/Linux_logo.png"  # Ensure you have an 'icon.png' file in the same directory
+    icon_path = r"Linux_logo.png"  # Ensure you have an 'icon.png' file in the same directory
     icon = PhotoImage(file=icon_path)
     root.iconphoto(False, icon)
     # Start the GUI
@@ -182,6 +180,9 @@ counters = {'total_entries': 0, 'name_count': 0}
 Items_details = []
 error_labels = [None] * 4
 root = Tk()
+# define fonts
+fontNum1 = tkFont.Font(family="Copperplate Gothic", size=12, weight="bold")
+fontNum2 = tkFont.Font(family="Arial", size=15, weight="bold")
 
 # # create background frame
 # front_frame = Frame(root, height=240, width=800)
@@ -192,32 +193,35 @@ root = Tk()
 # bg_label.grid(row=0, column=0)
 
 # Get purchase information from user input
-entry_Name = Entry(root)
-entry_Name.grid(column=1, row=0)
-entry_ReciptNumber = Entry(root)
-entry_ReciptNumber.grid(column=1, row=2)
-entry_ItemsNumber = Entry(root)
-entry_ItemsNumber.grid(column=1, row=3)
-delete_item = Entry(root)
-delete_item.grid(column=1, row=5)
+entry_Name = Entry(root, width=23)
+entry_Name.grid(column=1, row=0, sticky=W)
+entry_ReciptNumber = Entry(root, width=23)
+entry_ReciptNumber.grid(column=1, row=2, sticky=W)
+entry_ItemsNumber = Entry(root, width=23)
+entry_ItemsNumber.grid(column=1, row=3, sticky=W)
+delete_item = Entry(root, width=23)
+delete_item.grid(column=1, row=5, sticky=W)
 
 # create combobox
 purchase_list = ['Tables', 'Balloons', 'Party Hats', 'Snacks', 'Drinks', 'Serving Bowls']
 entry_ItemsPurchase = Combobox(root, values=purchase_list, state='readonly')
-entry_ItemsPurchase.grid(column=1, row=1)
+entry_ItemsPurchase.grid(column=1, row=1, sticky=W)
 entry_ItemsPurchase.set("Please choose a purchased item name. ")
 
 #   front_frame = Frame
-#   button_image_path = r"printer.png"
+#   import images
 button_image = PhotoImage(file=r"printer.png")
+quit_image = PhotoImage(file=r"quit button.png")
+
 #   Label(root, image=button_image, bg="lightblue").grid(column=2, row=0)
-Button(root, text="Print Details", image=button_image, compound=LEFT, command=print_items_details).grid(
-    column=2, row=4)
+Button(root, text="Print Details", font=fontNum1, image=button_image, compound=LEFT, command=print_items_details).grid(
+    column=2, row=2, pady=10)
+
+
+Button(root, image=quit_image,  command=quit).grid(column=2, row=0, pady=20, sticky='NW')
 
 
 
-# define fonts
-fontNum1 = tkFont.Font(family="Copperplate Gothic", size=12, weight="bold")
-fontNum2 = tkFont.Font(family="Arial", size=15, weight="bold")
+
 
 main()
