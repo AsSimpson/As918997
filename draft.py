@@ -1,39 +1,28 @@
-import tkinter as tk
+# Import the required libraries
+from tkinter import *
 from tkinter import ttk
-from tkinter.messagebox import showinfo
 
 
-# root window
-root = tk.Tk()
-root.geometry('300x200')
-root.resizable(False, False)
-root.title('Image Button Demo')
+# Create an instance of tkinter frame
+win = Tk()
+
+# Set the size of the tkinter window
+win.geometry("700x350")
+
+# Label(win,text="Hello, world! ").grid(column=0, row=0, sticky=W)
+ttk.Button(win, text="Button", command=quit).place(x=260, y=50)
+
+# Add a Frame
+frame1=Frame(win, bg="LightPink1")
+
+# Add an optional Label widget
+Label(frame1, text="Welcome Folks!", font=('Aerial 18 bold italic'), background="white").pack(pady= 50)
+
+# Add a Button widget in second frame
+ttk.Button(frame1, text="Button", command=quit).place(x=260, y=50)
 
 
-# download button handler
-def download_clicked():
-    showinfo(
-        title='Information',
-        message='Download button clicked!'
-    )
+frame1.place(x=260, y=50)
 
 
-download_icon = tk.PhotoImage(file=r'printer.png')
-
-download_button = ttk.Button(
-    root,
-    image=download_icon,
-    text='Download the Content',
-    compound=tk.LEFT,
-    command=download_clicked
-)
-
-tk.Label(text="    ").grid(row=0, column=0)
-tk.Label(text="    ").grid(row=1, column=0)
-tk.Label(text="    ").grid(row=0, column=1)
-tk.Label(text="    ").grid(row=0, column=2)
-tk.Label(text="    ").grid(row=0, column=3)
-download_button.grid(row=2, column=4)
-
-
-root.mainloop()
+win.mainloop()
