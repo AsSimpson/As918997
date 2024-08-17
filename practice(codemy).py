@@ -12,10 +12,10 @@ my_label.place(x=0,y=0, relwidth=1, relheight=1)
 
 # add something to the top of our image
 my_text = Label(root, text="Welcome!")
-my_text.pack()
+my_text.pack(pady=50)
 
 my_frame = Frame(root)
-my_frame.pack()
+my_frame.pack(pady=20)
 
 my_button1 = Button(my_frame, text="Exit").grid(column=0, row=0, padx=20)
 my_button2 = Button(my_frame, text="Start").grid(column=1, row=0, padx=20)
