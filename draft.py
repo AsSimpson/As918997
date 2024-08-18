@@ -1,29 +1,44 @@
-# Import the required libraries
-from tkinter import *
-from tkinter import ttk
+import tkinter as tk
+from PIL import Image
+
+root = tk.Tk()
+root.title("Displaying Gif")
+
+file = r'firework.gif'
+info = Image.open(file)
+
+frames = info.n_frames  # number of frames
+
+photoimage_objects = []
+for i in range(frames):
+    obj = tk.PhotoImage(file=file, format=f"gif -index {i}")
+    photoimage_objects.append(obj)
 
 
-def new_window():
-    Toplevel(win).title(str(counters['name_count']))
-    counters['name_count'] += 1
+def animation(current_frame=0):
+    global loop
+    image = photoimage_objects[current_frame]
+
+    gif_label.configure(image=image)
+    current_frame = current_frame + 1
+
+    if current_frame == frames:
+        current_frame = 0
+
+    loop = root.after(50, lambda: animation(current_frame))
 
 
-# Create an instance of tkinter frame
-win = Tk()
+def stop_animation():
+    root.after_cancel(loop)
 
-# Set the size of the tkinter window
-win.geometry("700x350")
 
-counters = {'total_entries': 1, 'name_count': 1}
+gif_label = tk.Label(root, image="")
+gif_label.pack()
 
-# Add a Frame
-frame1= Frame(win, bg="LightPink1")
+start = tk.Button(root, text="Start", command=lambda: animation(current_frame=0))
+start.pack()
 
-# Add an optional Label widget
-Label(frame1, text="Welcome Folks!", font=('Aerial 18 bold italic'), background="white").grid(column=0, row=0)
-frame1.pack(pady=10)
+stop = tk.Button(root, text="Stop", command=stop_animation)
+stop.pack()
 
-# Add a Button widget in second frame
-ttk.Button(frame1, text="New Window", command=new_window).grid(column=0, row=1)
-
-win.mainloop()
+root.mainloop()

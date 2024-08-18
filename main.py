@@ -9,8 +9,6 @@ from tkinter.ttk import Combobox
 
 def print_items_details():
     name_count = 0
-
-    # Add each item in the list into its own row
     while name_count < counters['total_entries']:
         Label(bottom, text=name_count + 1, relief="sunken", font=("Helvetica", 10), fg="blue", bg="IndianRed3").grid(
             column=0, row=name_count + 1, padx=5, pady=5)
@@ -24,6 +22,7 @@ def print_items_details():
               bg="IndianRed3").grid(column=4, row=name_count + 1, padx=5, pady=5)
         name_count += 1
         counters['name_count'] = name_count
+
 
 
 # Check the inputs are all valid
@@ -44,15 +43,15 @@ def check_inputs():
             messagebox.showerror(title="error", message="Input a valid RECEIPT NUMBER please. ")
             input_check = 1
     else:
-        messagebox.showerror(title="error", text="RECEIPT NUMBER should be a number. ")
+        messagebox.showerror(title="error", message="RECEIPT NUMBER should be a number. ")
         input_check = 1
     # Check that Items Number is not blank and between 0 and 30, set error text if invalid
     if entry_ItemsNumber.get().isdigit():
-        if int(entry_ItemsNumber.get()) < 0 or int(entry_ItemsNumber.get()) > 30:
-            messagebox.showerror(title="error", text="Input a valid RECEIPT NUMBER please. ")
+        if int(entry_ItemsNumber.get()) < 0 or int(entry_ItemsNumber.get()) > 100:
+            messagebox.showerror(title="error", message="Input a valid RECEIPT NUMBER please. ")
             input_check = 1
     else:
-        messagebox.showerror(title="error", text="RECEIPT NUMBER should be a number. ")
+        messagebox.showerror(title="error", message="RECEIPT NUMBER should be a number. ")
         input_check = 1
 
     if input_check == 0:
@@ -70,6 +69,7 @@ def append_item():
     entry_ItemsNumber.delete(0, 'end')
     counters['total_entries'] += 1
     entry_ItemsPurchased.set("Please choose an item name. ")
+    print_items_details()
 
 
 def save_receipt_to_file(receipt_number):
@@ -92,11 +92,11 @@ def delete_row():
         name_count = counters['name_count']
         delete_item.delete(0, 'end')
         # Clear the last item displayed on the GUI
-        Label(bottom, text="            ", font=fontNum2, bg="IndianRed3").grid(column=0, row=name_count + 1)
-        Label(bottom, text="            ", font=fontNum2, bg="IndianRed3").grid(column=1, row=name_count + 1)
-        Label(bottom, text="            ", font=fontNum2, bg="IndianRed3").grid(column=2, row=name_count + 1)
-        Label(bottom, text="            ", font=fontNum2, bg="IndianRed3").grid(column=3, row=name_count + 1)
-        Label(bottom, text="            ", font=fontNum2, bg="IndianRed3").grid(column=4, row=name_count + 1)
+        Label(bottom, text="            ", font=fontNum2, bg="IndianRed3").grid(column=0, row=name_count)
+        Label(bottom, text="            ", font=fontNum2, bg="IndianRed3").grid(column=1, row=name_count)
+        Label(bottom, text="            ", font=fontNum2, bg="IndianRed3").grid(column=2, row=name_count)
+        Label(bottom, text="            ", font=fontNum2, bg="IndianRed3").grid(column=3, row=name_count)
+        Label(bottom, text="            ", font=fontNum2, bg="IndianRed3").grid(column=4, row=name_count)
         # Print all the items in the list
         print_items_details()
 
@@ -115,6 +115,11 @@ def random_receipt():
     entry_ReceiptNumber.insert(0, str(randNum))
 
 
+def pin_window():
+    # Make the window jump above all
+    root.attributes('-topmost', True)
+
+
 # Create the buttons and labels
 def setup_widgets():
     global entry_Name, entry_ReceiptNumber, entry_ItemsNumber, delete_item, entry_ItemsPurchased, bottom
@@ -125,7 +130,7 @@ def setup_widgets():
     Label(top, text="Name", bg="orange", font=fontNum1).grid(column=0, row=0, padx=20, pady=25, sticky=W)
     Label(top, text="Items Hired", bg="orange", font=fontNum1).grid(column=0, row=1, padx=20, pady=25, sticky=W)
     Label(top, text="Receipt Number", bg="orange", font=fontNum1).grid(column=2, row=0, padx=20, pady=25, sticky=W)
-    Button(top, text="Random Number", height=1, command=random_receipt).grid(column=5, row=0, pady=25, sticky='NW')
+    Button(top, text="Random Number", bg="tomato", bd=5, font=fontNum3, height=1, command=random_receipt).grid(column=5, row=0, pady=30, sticky='NW')
     Label(top, text="Items Number", bg="orange", font=fontNum1).grid(column=2, row=1, padx=20, pady=25, sticky=W)
     
     # Get purchase information from user input
@@ -145,15 +150,16 @@ def setup_widgets():
     # Middle Frame:
     middle = Frame(root, bg='orange')
     middle.place(relheight=0.3, relwidth=1, rely=0.3)
-    Button(middle, text="Append Details", font=fontNum1, width=190, height=60, bg='SeaGreen3', bd=10, relief='raised',
-           image=append_image, compound=LEFT, command=check_inputs).grid(column=0, row=0, padx=10, sticky='NW')
-    Button(middle, text="Print Details", font=fontNum1, width=190, height=60, bg='OliveDrab1', bd=10, relief='raised',
-           image=button_image, compound=LEFT, command=print_items_details).grid(column=1, row=0, padx=10, sticky='NW')
+    Button(middle, text="Pin Window", font=fontNum1, width=20, height=1, bg='SeaGreen3', bd=10, relief='raised'
+           , command=pin_window, compound=LEFT).grid(column=0, row=0, padx=10, sticky='NW')
+    Button(middle, text="Submit", font=fontNum1, width=190, height=60, bg='OliveDrab1', bd=10, relief='raised',
+           image=button_image, compound=LEFT, command=check_inputs).grid(column=1, row=0, padx=10, sticky='NW')
 
     # Button(middle, image=quit_image, command=quit).grid(column=2, row=0, padx=10, sticky='NW')
     Button(middle, text="QUIT", fg='red', font=fontNum1, width=15, height=1, bg='yellow2', bd=10, relief='raised',
            command=quit).grid(column=2, row=0, padx=10, sticky='NW')
-    Button(middle, text="Delete Row", font=fontNum1, height=1, width=19, command=delete_row, bg='red', bd=10).grid(column=0, row=1, padx=10, pady=12, sticky=W)
+    Button(middle, text="Delete Row", font=fontNum1, height=1, width=19, command=delete_row, bg='red', bd=10).grid(
+        column=0, row=1, padx=10, pady=12, sticky=W)
     delete_item = Entry(middle, width=23)
     delete_item.grid(column=1, row=1, sticky=W)
 
@@ -175,11 +181,12 @@ def setup_widgets():
 
 
 def main():
-    global root, fontNum1, fontNum2, button_image, quit_image, append_image
+    global root, fontNum1, fontNum2, fontNum3, button_image, quit_image, append_image
     root = Tk()
     root.geometry("750x700")
     root.title("*" * 50 + "Party Purchase" + "*" * 50)
     root.configure(bg='lightblue')
+
 
     # Set the window icon
     icon_path = r"Linux_logo.png"  # Ensure you have an 'icon.png' file in the same directory
@@ -189,7 +196,7 @@ def main():
     # define fonts
     fontNum1 = tkFont.Font(family="Agency FB", size=20, weight="bold")
     fontNum2 = tkFont.Font(family="Agency FB", size=30, weight="bold")
-    fontNum3 = tkFont.Font(family="Agency FB", size=40, weight="bold")
+    fontNum3 = tkFont.Font(family="Arial", size=11, weight="bold")
 
     #   import images
     button_image = PhotoImage(file=r"printer.png")
@@ -202,7 +209,7 @@ def main():
     messagebox.showinfo(title="Tips(1/3):", message="To record purchases by using this program, input all the required"
                                                     " information, then click the button 'Append Details'. To print"
                                                     " the information, please click the button 'Print Details. ")
-    messagebox.showinfo(title="Tips(2/3):", message="Having trouble on type receipt numbers all day? "
+    messagebox.showinfo(title="Tips(2/3):", message="Having trouble with thinking about receipt numbers all day? "
                                                     "You can actually generate a random receipt number by click the"
                                                     " button 'Random Number' beside 'Receipt Number' entry box. ")
     messagebox.showinfo(title="Tip(3/3):", message="Need a help? You can check the instructions of this program by"
