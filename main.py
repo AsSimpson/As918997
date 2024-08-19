@@ -5,6 +5,7 @@ import tkinter.font as tkFont
 from tkinter import *
 from tkinter import messagebox
 from tkinter.ttk import Combobox
+from PIL import Image
 
 
 def print_items_details():
@@ -123,8 +124,12 @@ def pin_window():
 # Create the buttons and labels
 def setup_widgets():
     global entry_Name, entry_ReceiptNumber, entry_ItemsNumber, delete_item, entry_ItemsPurchased, bottom
+    # Main columns
+    left_column = Frame(root)
+    left_column.place(anchor=NW, relx=0, rely=0, relheight=1, relwidth=0.6)
+
     # Create two frames to sort out all the widgets: Top one:
-    top = (Frame(root, bg='yellow'))
+    top = (Frame(left_column, bg='yellow'))
     top.place(anchor=NW, relheight=0.3, relwidth=1)
     # Create all the labels, buttons, and entry boxes. Put them in the correct grid location
     Label(top, text="Name", bg="orange", font=fontNum1).grid(column=0, row=0, padx=20, pady=25, sticky=W)
@@ -147,15 +152,14 @@ def setup_widgets():
     entry_ItemsPurchased.grid(column=1, row=1, sticky=W)
     entry_ItemsPurchased.set("Please choose an item name. ")
 
+
     # Middle Frame:
-    middle = Frame(root, bg='orange')
+    middle = Frame(left_column, bg='orange')
     middle.place(relheight=0.3, relwidth=1, rely=0.3)
     Button(middle, text="Pin Window", font=fontNum1, width=20, height=1, bg='SeaGreen3', bd=10, relief='raised'
            , command=pin_window, compound=LEFT).grid(column=0, row=0, padx=10, sticky='NW')
     Button(middle, text="Submit", font=fontNum1, width=190, height=60, bg='OliveDrab1', bd=10, relief='raised',
            image=button_image, compound=LEFT, command=check_inputs).grid(column=1, row=0, padx=10, sticky='NW')
-
-    # Button(middle, image=quit_image, command=quit).grid(column=2, row=0, padx=10, sticky='NW')
     Button(middle, text="QUIT", fg='red', font=fontNum1, width=15, height=1, bg='yellow2', bd=10, relief='raised',
            command=quit).grid(column=2, row=0, padx=10, sticky='NW')
     Button(middle, text="Delete Row", font=fontNum1, height=1, width=19, command=delete_row, bg='red', bd=10).grid(
@@ -166,24 +170,53 @@ def setup_widgets():
 
     # Create the column headings with color
     # Bottom Frame
-    bottom = Frame(root, bg='IndianRed3')
+    bottom = Frame(left_column, bg='IndianRed3')
     bottom.place(relheight=0.4, relwidth=1, rely=0.6)
-    Label(bottom, font=fontNum1, text="Row", fg="black", bg="cyan", width=10, relief="raised", bd=5).grid(
-        column=0, row=0)
-    Label(bottom, font=fontNum1, text="Name", fg="white", bg="black", relief="sunken", bd=5).grid(
+    Label(bottom, font=fontNum1, text="Row", fg="chocolate1", bg="chocolate1", width=6, height=3, relief="ridge", bd=5).grid(
+        column=0, row=0, sticky='NW')
+    Label(bottom, font=fontNum1, text="Name", fg="white", bg="chocolate1", relief="ridge", bd=5).grid(
         column=1, row=0, padx=2, pady=5)
-    Label(bottom, font=fontNum1, text="Items Hired", fg="white", bg="black", relief="ridge",
+    Label(bottom, font=fontNum1, text="Items Hired", fg="white", bg="chocolate1", relief="ridge",
           bd=5).grid(column=2, row=0, padx=1, pady=5)
-    Label(bottom, font=fontNum1, text="Receipt Number", fg="white", bg="black", relief="groove",
+    Label(bottom, font=fontNum1, text="Receipt Number", fg="white", bg="chocolate1", relief="groove",
           bd=5).grid(column=3, row=0, padx=2, pady=5)
-    Label(bottom, font=fontNum1, text="Items Hired", fg="white", bg="black", relief="raised",
+    Label(bottom, font=fontNum1, text="Items Hired", fg="white", bg="chocolate1", relief="raised",
           bd=5).grid(column=4, row=0, padx=2, pady=5)
 
 
+def animation(current_frame=0):
+    global loop
+    image = photoimage_objects[current_frame]
+
+    gif_label.configure(image=image)
+    current_frame = current_frame + 1
+
+    if current_frame == frames:
+        current_frame = 0
+
+    loop = right_column.after(50, lambda: animation(current_frame))
+
+
+def gif_image():
+    global right_column, photoimage_objects, gif_label
+    right_column = Frame(root)
+    right_column.place(anchor=NW, relx=0.6, relheight=1, relwidth=0.4)
+
+    photoimage_objects = []
+    for i in range(frames):
+        obj = PhotoImage(file=gif_file, format=f"gif -index {i}")
+        photoimage_objects.append(obj)
+
+    gif_label = Label(right_column, image="")
+    gif_label.place(anchor=NW, x=0, y=0)
+
+    animation(current_frame=0)
+
+
 def main():
-    global root, fontNum1, fontNum2, fontNum3, button_image, quit_image, append_image
+    global root, fontNum1, fontNum2, fontNum3, fontNum4, button_image, quit_image, append_image, gif_file, info, frames
     root = Tk()
-    root.geometry("750x700")
+    root.geometry("1400x700")
     root.title("*" * 50 + "Party Purchase" + "*" * 50)
     root.configure(bg='lightblue')
 
@@ -193,10 +226,19 @@ def main():
     icon = PhotoImage(file=icon_path)
     root.iconphoto(False, icon)
 
+    # import gif image
+    gif_file = r'giphy.gif'
+    info = Image.open(gif_file)
+
+    frames = info.n_frames  # number of frames
+
+    gif_image()
+
     # define fonts
     fontNum1 = tkFont.Font(family="Agency FB", size=20, weight="bold")
     fontNum2 = tkFont.Font(family="Agency FB", size=30, weight="bold")
     fontNum3 = tkFont.Font(family="Arial", size=11, weight="bold")
+    fontNum4 = tkFont.Font(family="Cooper Black", size=18, weight='normal')
 
     #   import images
     button_image = PhotoImage(file=r"printer.png")

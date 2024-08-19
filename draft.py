@@ -1,44 +1,51 @@
-import tkinter as tk
+from tkinter import *
 from PIL import Image
 
-root = tk.Tk()
+root = Tk()
 root.title("Displaying Gif")
+root.geometry("1000x500")
+root.configure(bg="lightblue")
 
-file = r'firework.gif'
-info = Image.open(file)
-
-frames = info.n_frames  # number of frames
-
-photoimage_objects = []
-for i in range(frames):
-    obj = tk.PhotoImage(file=file, format=f"gif -index {i}")
-    photoimage_objects.append(obj)
+# left_column = Frame(root, bg='black')
+# left_column.place(relx=0, relwidth=0.5, relheight=1)
 
 
-def animation(current_frame=0):
-    global loop
-    image = photoimage_objects[current_frame]
+def gif_image():
 
-    gif_label.configure(image=image)
-    current_frame = current_frame + 1
+    right_column = Frame(root)
+    right_column.place(relx=0.5, relwidth=0.5, relheight=1)
+    gif_file = r'firework.gif'
+    info = Image.open(gif_file)
 
-    if current_frame == frames:
-        current_frame = 0
+    frames = info.n_frames  # number of frames
 
-    loop = root.after(50, lambda: animation(current_frame))
-
-
-def stop_animation():
-    root.after_cancel(loop)
+    photoimage_objects = []
+    for i in range(frames):
+        obj = PhotoImage(file=gif_file, format=f"gif -index {i}")
+        photoimage_objects.append(obj)
 
 
-gif_label = tk.Label(root, image="")
-gif_label.pack()
+    def animation(current_frame=0):
+        global loop
+        image = photoimage_objects[current_frame]
 
-start = tk.Button(root, text="Start", command=lambda: animation(current_frame=0))
-start.pack()
+        gif_label.configure(image=image)
+        current_frame = current_frame + 1
 
-stop = tk.Button(root, text="Stop", command=stop_animation)
-stop.pack()
+        if current_frame == frames:
+            current_frame = 0
+
+        loop = right_column.after(50, lambda: animation(current_frame))
+
+
+
+    gif_label = Label(right_column, image="")
+    gif_label.pack()
+
+    animation(current_frame=0)
+
+gif_image()
 
 root.mainloop()
+
+
