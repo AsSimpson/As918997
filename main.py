@@ -2,31 +2,14 @@ import os
 import time
 import random
 import tkinter.font as tkFont
+import tkinter.scrolledtext as st
 from tkinter import *
 from tkinter import messagebox
 from tkinter.ttk import Combobox
 from PIL import Image
 
 
-def print_items_details():
-    name_count = 0
-    while name_count < counters['total_entries']:
-        Label(bottom, text=name_count + 1, relief="sunken", font=("Helvetica", 10), fg="blue", bg="IndianRed3").grid(
-            column=0, row=name_count + 1, padx=5, pady=5)
-        Label(bottom, text=(Items_details[name_count][0]), relief="sunken", font=fontNum1, fg="blue",
-              bg="IndianRed3").grid(column=1, row=name_count + 1, padx=5, pady=5)
-        Label(bottom, text=(Items_details[name_count][1]), relief="sunken", font=("Helvetica", 10), fg="blue",
-              bg="IndianRed3").grid(column=2, row=name_count + 1, padx=5, pady=5)
-        Label(bottom, text=(Items_details[name_count][2]), relief="sunken", font=("Helvetica", 10), fg="blue",
-              bg="IndianRed3").grid(column=3, row=name_count + 1, padx=5, pady=5)
-        Label(bottom, text=(Items_details[name_count][3]), relief="sunken", font=("Helvetica", 10), fg="blue",
-              bg="IndianRed3").grid(column=4, row=name_count + 1, padx=5, pady=5)
-        name_count += 1
-        counters['name_count'] = name_count
-
-
-
-# Check the inputs are all valid
+# Check if the inputs are valid
 def check_inputs():
     input_check = 0
     # Check that Name is not blank, set error text if blank
@@ -73,6 +56,48 @@ def append_item():
     print_items_details()
 
 
+def print_items_details():
+    name_count = 0
+    while name_count < counters['total_entries']:
+        Label(bottom, text=name_count + 1, relief="sunken", font=("Helvetica", 10), fg="blue", bg="IndianRed3").grid(
+            column=0, row=name_count + 1, padx=5, pady=5)
+        Label(bottom, text=(Items_details[name_count][0]), relief="sunken", font=fontNum1, fg="blue",
+              bg="IndianRed3").grid(column=1, row=name_count + 1, padx=5, pady=5)
+        Label(bottom, text=(Items_details[name_count][1]), relief="sunken", font=("Helvetica", 10), fg="blue",
+              bg="IndianRed3").grid(column=2, row=name_count + 1, padx=5, pady=5)
+        Label(bottom, text=(Items_details[name_count][2]), relief="sunken", font=("Helvetica", 10), fg="blue",
+              bg="IndianRed3").grid(column=3, row=name_count + 1, padx=5, pady=5)
+        Label(bottom, text=(Items_details[name_count][3]), relief="sunken", font=("Helvetica", 10), fg="blue",
+              bg="IndianRed3").grid(column=4, row=name_count + 1, padx=5, pady=5)
+        name_count += 1
+        counters['name_count'] = name_count
+
+
+def scrolled_receipt():
+    name_count = 0
+    while name_count < counters['total_entries']:
+        def submit_entry():
+            receipt_area.configure(state='normal')
+            receipt_area.insert(END, f"{insert_entry.get()}\n")
+            insert_entry.delete(0, "end")
+            receipt_area.configure(state='disabled')
+
+    button_insert = Button(text="Submit", command=submit_entry)
+    button_insert.grid(row=1)
+
+    # Title Label
+    Label(bottom, text="ScrolledText Widget Example", font=("Times New Roman", 15), background='green', foreground="white").grid(column=0, row=2)
+
+    # Creating scrolled text area
+
+    receipt_area = st.ScrolledText(root, width=30, height=8, font=("Times New Roman", 15))
+
+    receipt_area.grid(column=0, row=3, pady=10, padx=10)
+
+    # widget with Read only by disabling the state
+    receipt_area.configure(state='disabled')
+
+
 def save_receipt_to_file(receipt_number):
     if not os.path.exists('savedata'):
         os.makedirs('savedata')
@@ -116,14 +141,59 @@ def random_receipt():
     entry_ReceiptNumber.insert(0, str(randNum))
 
 
+def animation(current_frame=0):
+    global loop
+    image = photoimage_objects[current_frame]
+
+    gif_label.configure(image=image)
+    current_frame = current_frame + 1
+
+    if current_frame == frames:
+        current_frame = 0
+
+    loop = right_column.after(50, lambda: animation(current_frame))
+
+
+def gif_image():
+    global right_column, photoimage_objects, gif_label
+    right_column = Frame(root)
+    right_column.place(anchor=NW, relx=0.6, relheight=1, relwidth=0.4)
+
+    photoimage_objects = []
+    for i in range(frames):
+        obj = PhotoImage(file=gif_file, format=f"gif -index {i}")
+        photoimage_objects.append(obj)
+
+    gif_label = Label(right_column, image="")
+    gif_label.place(anchor=NW, x=0, y=0)
+
+    animation(current_frame=0)
+
+
 def pin_window():
-    # Make the window jump above all
-    root.attributes('-topmost', True)
+    # print(button_pin["state"])
+    if str(button_pin['bg']) != 'gray':
+        root.attributes('-topmost', True)
+        button_pin.configure(bg='gray')
+    elif str(button_pin['bg']) == 'gray':
+        root.attributes('-topmost', False)
+        button_pin.configure(bg='SeaGreen3')
+
+
+
+    # if button_pin["state"] == 'active':
+    #     root.attributes('-topmost', False)
+    #     button_pin.configure(state='normal')
+    # # Make the window jump above all
+    # else:
+    #     root.attributes('-topmost', True)
+    #     button_pin.configure(state='active')
+
 
 
 # Create the buttons and labels
 def setup_widgets():
-    global entry_Name, entry_ReceiptNumber, entry_ItemsNumber, delete_item, entry_ItemsPurchased, bottom
+    global entry_Name, entry_ReceiptNumber, entry_ItemsNumber, delete_item, entry_ItemsPurchased, middle, bottom, button_pin
     # Main columns
     left_column = Frame(root)
     left_column.place(anchor=NW, relx=0, rely=0, relheight=1, relwidth=0.6)
@@ -156,8 +226,9 @@ def setup_widgets():
     # Middle Frame:
     middle = Frame(left_column, bg='orange')
     middle.place(relheight=0.3, relwidth=1, rely=0.3)
-    Button(middle, text="Pin Window", font=fontNum1, width=20, height=1, bg='SeaGreen3', bd=10, relief='raised'
-           , command=pin_window, compound=LEFT).grid(column=0, row=0, padx=10, sticky='NW')
+    button_pin = Button(middle, text="Pin Window", font=fontNum1, width=20, height=1, bg='SeaGreen3', bd=10,
+                        relief='raised', command=pin_window, state='normal', compound=LEFT)
+    button_pin.grid(column=0, row=0, padx=10, sticky='NW')
     Button(middle, text="Submit", font=fontNum1, width=190, height=60, bg='OliveDrab1', bd=10, relief='raised',
            image=button_image, compound=LEFT, command=check_inputs).grid(column=1, row=0, padx=10, sticky='NW')
     Button(middle, text="QUIT", fg='red', font=fontNum1, width=15, height=1, bg='yellow2', bd=10, relief='raised',
@@ -172,45 +243,17 @@ def setup_widgets():
     # Bottom Frame
     bottom = Frame(left_column, bg='IndianRed3')
     bottom.place(relheight=0.4, relwidth=1, rely=0.6)
-    Label(bottom, font=fontNum1, text="Row", fg="chocolate1", bg="chocolate1", width=6, height=3, relief="ridge", bd=5).grid(
-        column=0, row=0, sticky='NW')
-    Label(bottom, font=fontNum1, text="Name", fg="white", bg="chocolate1", relief="ridge", bd=5).grid(
-        column=1, row=0, padx=2, pady=5)
-    Label(bottom, font=fontNum1, text="Items Hired", fg="white", bg="chocolate1", relief="ridge",
-          bd=5).grid(column=2, row=0, padx=1, pady=5)
-    Label(bottom, font=fontNum1, text="Receipt Number", fg="white", bg="chocolate1", relief="groove",
-          bd=5).grid(column=3, row=0, padx=2, pady=5)
-    Label(bottom, font=fontNum1, text="Items Hired", fg="white", bg="chocolate1", relief="raised",
-          bd=5).grid(column=4, row=0, padx=2, pady=5)
+    Label(bottom, font=fontNum1, text="Row", fg="white", bg="chocolate1", width=8, height=2, relief="ridge", bd=5).grid(
+        column=0, row=0)
+    Label(bottom, font=fontNum1, text="Name", fg="white", bg="chocolate1", width=20, height=2, relief="ridge", bd=5).grid(
+        column=1, row=0)
+    Label(bottom, font=fontNum1, text="Items Hired", fg="white", bg="chocolate1", width=16, height=2, relief="ridge",
+          bd=5).grid(column=2, row=0)
+    Label(bottom, font=fontNum1, text="Receipt Number", fg="white", bg="chocolate1", width=14, height=2, relief="ridge",
+          bd=5).grid(column=3, row=0)
+    Label(bottom, font=fontNum1, text="Items Hired", fg="white", bg="chocolate1", width=16, height=2, relief="ridge",
+          bd=5).grid(column=4, row=0)
 
-
-def animation(current_frame=0):
-    global loop
-    image = photoimage_objects[current_frame]
-
-    gif_label.configure(image=image)
-    current_frame = current_frame + 1
-
-    if current_frame == frames:
-        current_frame = 0
-
-    loop = right_column.after(50, lambda: animation(current_frame))
-
-
-def gif_image():
-    global right_column, photoimage_objects, gif_label
-    right_column = Frame(root)
-    right_column.place(anchor=NW, relx=0.6, relheight=1, relwidth=0.4)
-
-    photoimage_objects = []
-    for i in range(frames):
-        obj = PhotoImage(file=gif_file, format=f"gif -index {i}")
-        photoimage_objects.append(obj)
-
-    gif_label = Label(right_column, image="")
-    gif_label.place(anchor=NW, x=0, y=0)
-
-    animation(current_frame=0)
 
 
 def main():

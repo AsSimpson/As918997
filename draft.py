@@ -1,51 +1,51 @@
 from tkinter import *
-from PIL import Image
+import tkinter.scrolledtext as st
 
 root = Tk()
-root.title("Displaying Gif")
-root.geometry("1000x500")
-root.configure(bg="lightblue")
+root.title("ScrolledText Widget")
 
-# left_column = Frame(root, bg='black')
-# left_column.place(relx=0, relwidth=0.5, relheight=1)
+entry_set = []
+
+def scrolled_receipt():
+    def submit_entry():
+        receipt_area.configure(state='normal')
+        receipt_area.insert(END, f"{insert_entry1.get()}\t")
+        receipt_area.insert(END, f"{insert_entry2.get()}\t")
+        receipt_area.insert(END, f"{insert_entry3.get()}\t")
+        receipt_area.insert(END, f"{insert_entry4.get()}\n")
+        insert_entry1.delete(0, "end")
+        insert_entry2.delete(0, "end")
+        insert_entry3.delete(0, "end")
+        insert_entry4.delete(0, "end")
+        receipt_area.configure(state='disabled')
+
+    insert_entry1 = Entry(width=50)
+    insert_entry1.grid(row=0)
+
+    insert_entry2 = Entry(width=50)
+    insert_entry2.grid(row=2)
+
+    insert_entry3 = Entry(width=50)
+    insert_entry3.grid(row=3)
+
+    insert_entry4 = Entry(width=50)
+    insert_entry4.grid(row=4)
+
+    entry_set.append([insert_entry1.get(), insert_entry2.get(), insert_entry3.get(), insert_entry4.get()])
+
+    button_insert = Button(text="Submit", command=submit_entry)
+    button_insert.grid(row=5)
+
+    # Creating scrolled text area
+
+    receipt_area = st.ScrolledText(root, width=150, height=8, font=("Times New Roman", 15))
+
+    receipt_area.grid(column=0, row=7, pady=10, padx=10)
+
+    # widget with Read only by disabling the state
+    receipt_area.configure(state='disabled')
 
 
-def gif_image():
-
-    right_column = Frame(root)
-    right_column.place(relx=0.5, relwidth=0.5, relheight=1)
-    gif_file = r'firework.gif'
-    info = Image.open(gif_file)
-
-    frames = info.n_frames  # number of frames
-
-    photoimage_objects = []
-    for i in range(frames):
-        obj = PhotoImage(file=gif_file, format=f"gif -index {i}")
-        photoimage_objects.append(obj)
-
-
-    def animation(current_frame=0):
-        global loop
-        image = photoimage_objects[current_frame]
-
-        gif_label.configure(image=image)
-        current_frame = current_frame + 1
-
-        if current_frame == frames:
-            current_frame = 0
-
-        loop = right_column.after(50, lambda: animation(current_frame))
-
-
-
-    gif_label = Label(right_column, image="")
-    gif_label.pack()
-
-    animation(current_frame=0)
-
-gif_image()
+scrolled_receipt()
 
 root.mainloop()
-
-
