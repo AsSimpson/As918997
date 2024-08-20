@@ -8,6 +8,9 @@ from tkinter import messagebox
 from tkinter.ttk import Combobox
 from PIL import Image
 
+import pandas as pd
+from prettytable import PrettyTable
+
 
 # Check if the inputs are valid
 def check_inputs():
@@ -43,9 +46,12 @@ def check_inputs():
 
 
 def append_item():
+    global df
     # Append each item to its own area of the list
-    Items_details.append([entry_Name.get(), entry_ItemsPurchased.get(), entry_ReceiptNumber.get(), entry_ItemsNumber.get()])
+    Items_details.append([entry_Name.get(), entry_ItemsPurchased.get(), entry_ItemsNumber.get(), entry_ReceiptNumber.get()])
     save_receipt_to_file(entry_ReceiptNumber.get())
+
+    df = pd.DataFrame(Items_details)  # No header provided on example input
     # Clear the entry boxes
     entry_Name.delete(0, 'end')
     entry_ItemsPurchased.delete(0, 'end')
@@ -53,48 +59,49 @@ def append_item():
     entry_ItemsNumber.delete(0, 'end')
     counters['total_entries'] += 1
     entry_ItemsPurchased.set("Please choose an item name. ")
-    print_items_details()
+    receipt_area.configure(state='normal')
+    scrolled_receipt()
+    receipt_area.configure(state='disabled')
 
 
-def print_items_details():
-    name_count = 0
-    while name_count < counters['total_entries']:
-        Label(bottom, text=name_count + 1, relief="sunken", font=("Helvetica", 10), fg="blue", bg="IndianRed3").grid(
-            column=0, row=name_count + 1, padx=5, pady=5)
-        Label(bottom, text=(Items_details[name_count][0]), relief="sunken", font=fontNum1, fg="blue",
-              bg="IndianRed3").grid(column=1, row=name_count + 1, padx=5, pady=5)
-        Label(bottom, text=(Items_details[name_count][1]), relief="sunken", font=("Helvetica", 10), fg="blue",
-              bg="IndianRed3").grid(column=2, row=name_count + 1, padx=5, pady=5)
-        Label(bottom, text=(Items_details[name_count][2]), relief="sunken", font=("Helvetica", 10), fg="blue",
-              bg="IndianRed3").grid(column=3, row=name_count + 1, padx=5, pady=5)
-        Label(bottom, text=(Items_details[name_count][3]), relief="sunken", font=("Helvetica", 10), fg="blue",
-              bg="IndianRed3").grid(column=4, row=name_count + 1, padx=5, pady=5)
-        name_count += 1
-        counters['name_count'] = name_count
+# def print_items_details():
+#     name_count = 0
+#     while name_count < counters['total_entries']:
+#         Label(bottom, text=name_count + 1, relief="sunken", font=("Helvetica", 10), fg="blue", bg="IndianRed3").grid(
+#             column=0, row=name_count + 1, padx=5, pady=5)
+#         Label(bottom, text=(Items_details[name_count][0]), relief="sunken", font=fontNum1, fg="blue",
+#               bg="IndianRed3").grid(column=1, row=name_count + 1, padx=5, pady=5)
+#         Label(bottom, text=(Items_details[name_count][1]), relief="sunken", font=("Helvetica", 10), fg="blue",
+#               bg="IndianRed3").grid(column=2, row=name_count + 1, padx=5, pady=5)
+#         Label(bottom, text=(Items_details[name_count][2]), relief="sunken", font=("Helvetica", 10), fg="blue",
+#               bg="IndianRed3").grid(column=3, row=name_count + 1, padx=5, pady=5)
+#         Label(bottom, text=(Items_details[name_count][3]), relief="sunken", font=("Helvetica", 10), fg="blue",
+#               bg="IndianRed3").grid(column=4, row=name_count + 1, padx=5, pady=5)
+#         name_count += 1
+#         counters['name_count'] = name_count
 
 
 def scrolled_receipt():
+    name_count = counters['name_count']
+    print(format_df(df))
+    receipt_area.delete(1.0, END)
+    receipt_area.insert(END, format_df(df))
+    counters['name_count'] += 1
+    receipt_area.configure(state='disabled')
+    # button_insert = Button(text="Submit", command=submit_entry)
+    # button_insert.grid(row=1)
+
+
+def reprint():
     name_count = 0
     while name_count < counters['total_entries']:
-        def submit_entry():
-            receipt_area.configure(state='normal')
-            receipt_area.insert(END, f"{insert_entry.get()}\n")
-            insert_entry.delete(0, "end")
-            receipt_area.configure(state='disabled')
-
-    button_insert = Button(text="Submit", command=submit_entry)
-    button_insert.grid(row=1)
-
-    # Title Label
-    Label(bottom, text="ScrolledText Widget Example", font=("Times New Roman", 15), background='green', foreground="white").grid(column=0, row=2)
-
-    # Creating scrolled text area
-
-    receipt_area = st.ScrolledText(root, width=30, height=8, font=("Times New Roman", 15))
-
-    receipt_area.grid(column=0, row=3, pady=10, padx=10)
-
-    # widget with Read only by disabling the state
+        receipt_area.insert(END, f"{name_count + 1}\t")
+        receipt_area.insert(END, f"|{Items_details[name_count][0]}\t")
+        receipt_area.insert(END, f"|{Items_details[name_count][1]}\t")
+        receipt_area.insert(END, f"|{Items_details[name_count][2]}\t")
+        receipt_area.insert(END, f"|{Items_details[name_count][3]}\n")
+        name_count += 1
+    counters['name_count'] = name_count
     receipt_area.configure(state='disabled')
 
 
@@ -104,27 +111,24 @@ def save_receipt_to_file(receipt_number):
     with open(f'savedata/{receipt_number}.txt', 'w') as file:
         file.write(f"Name: {entry_Name.get()}\n")
         file.write(f"Items Hired: {entry_ItemsPurchased.get()}\n")
-        file.write(f"Receipt Number: {entry_ReceiptNumber.get()}\n")
         file.write(f"Items Number: {entry_ItemsNumber.get()}\n")
-
+        file.write(f"Receipt Number: {entry_ReceiptNumber.get()}\n")
 
 # Delete a row from the list
 def delete_row():
+    global df
+    receipt_area.configure(state='normal')
     row_index = int(delete_item.get()) - 1
     if 0 <= row_index < counters['total_entries']:
         delete_receipt_file(Items_details[row_index][2])
         del Items_details[row_index]
+        # df = Items_details
         counters['total_entries'] -= 1
-        name_count = counters['name_count']
-        delete_item.delete(0, 'end')
-        # Clear the last item displayed on the GUI
-        Label(bottom, text="            ", font=fontNum2, bg="IndianRed3").grid(column=0, row=name_count)
-        Label(bottom, text="            ", font=fontNum2, bg="IndianRed3").grid(column=1, row=name_count)
-        Label(bottom, text="            ", font=fontNum2, bg="IndianRed3").grid(column=2, row=name_count)
-        Label(bottom, text="            ", font=fontNum2, bg="IndianRed3").grid(column=3, row=name_count)
-        Label(bottom, text="            ", font=fontNum2, bg="IndianRed3").grid(column=4, row=name_count)
-        # Print all the items in the list
-        print_items_details()
+        # name_count = counters['name_count']
+        delete_item.delete(0, END)
+        # Delete all the previous content
+        # Print all the items back in the list
+        scrolled_receipt()
 
 
 def delete_receipt_file(receipt_number):
@@ -174,26 +178,23 @@ def pin_window():
     # print(button_pin["state"])
     if str(button_pin['bg']) != 'gray':
         root.attributes('-topmost', True)
-        button_pin.configure(bg='gray')
+        button_pin.configure(bg='gray', text="Unpin Window")
     elif str(button_pin['bg']) == 'gray':
         root.attributes('-topmost', False)
-        button_pin.configure(bg='SeaGreen3')
+        button_pin.configure(bg='SeaGreen3', text="Pin Window")
 
 
-
-    # if button_pin["state"] == 'active':
-    #     root.attributes('-topmost', False)
-    #     button_pin.configure(state='normal')
-    # # Make the window jump above all
-    # else:
-    #     root.attributes('-topmost', True)
-    #     button_pin.configure(state='active')
-
+def format_df(df):
+    table = PrettyTable([''] + list(df.columns))
+    for row in df.itertuples():
+        table.add_row(row)
+    return str(table)
 
 
 # Create the buttons and labels
 def setup_widgets():
-    global entry_Name, entry_ReceiptNumber, entry_ItemsNumber, delete_item, entry_ItemsPurchased, middle, bottom, button_pin
+    global entry_Name, entry_ReceiptNumber, entry_ItemsNumber, delete_item, entry_ItemsPurchased, middle, bottom, \
+        button_pin, receipt_area
     # Main columns
     left_column = Frame(root)
     left_column.place(anchor=NW, relx=0, rely=0, relheight=1, relwidth=0.6)
@@ -243,16 +244,30 @@ def setup_widgets():
     # Bottom Frame
     bottom = Frame(left_column, bg='IndianRed3')
     bottom.place(relheight=0.4, relwidth=1, rely=0.6)
-    Label(bottom, font=fontNum1, text="Row", fg="white", bg="chocolate1", width=8, height=2, relief="ridge", bd=5).grid(
+    header = Frame(bottom, bg='IndianRed3')
+    header.place(anchor=NW, relx=0, rely=0, relheight=0.3, relwidth=1)
+
+    Label(header, font=fontNum1, text="Row", fg="white", bg="chocolate1", width=4, height=2, relief="ridge", bd=5).grid(
         column=0, row=0)
-    Label(bottom, font=fontNum1, text="Name", fg="white", bg="chocolate1", width=20, height=2, relief="ridge", bd=5).grid(
+    Label(header, font=fontNum1, text="Name", fg="white", bg="chocolate1", width=18, height=2, relief="ridge", bd=5).grid(
         column=1, row=0)
-    Label(bottom, font=fontNum1, text="Items Hired", fg="white", bg="chocolate1", width=16, height=2, relief="ridge",
+    Label(header, font=fontNum1, text="Items Hired", fg="white", bg="chocolate1", width=20, height=2, relief="ridge",
           bd=5).grid(column=2, row=0)
-    Label(bottom, font=fontNum1, text="Receipt Number", fg="white", bg="chocolate1", width=14, height=2, relief="ridge",
+    Label(header, font=fontNum1, text="Hired Amount", fg="white", bg="chocolate1", width=14, height=2, relief="ridge",
           bd=5).grid(column=3, row=0)
-    Label(bottom, font=fontNum1, text="Items Hired", fg="white", bg="chocolate1", width=16, height=2, relief="ridge",
+    Label(header, font=fontNum1, text="Receipt Number", fg="white", bg="chocolate1", width=14, height=2, relief="ridge",
           bd=5).grid(column=4, row=0)
+
+    # Creating scrolled text area
+    receipt = Frame(bottom, bg='lightblue')
+    receipt.place(anchor=NW, relx=0, rely=0.3, relheight=0.7, relwidth=1)
+    receipt_area = st.ScrolledText(receipt, bg='IndianRed3', width=110, height=14)
+
+    receipt_area.grid(column=0, row=1, pady=5, padx=5)
+
+    # widget with Read only by disabling the state
+    receipt_area.configure(state='disabled')
+
 
 
 
