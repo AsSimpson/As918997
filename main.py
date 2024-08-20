@@ -2,7 +2,6 @@ import os
 import time
 import random
 import tkinter.font as tkFont
-import tkinter.scrolledtext as st
 from tkinter import *
 from tkinter import messagebox
 from tkinter.ttk import Combobox
@@ -44,7 +43,7 @@ def check_inputs():
 
 def append_item():
     # Append each item to its own area of the list
-    Items_details.append([entry_Name.get(), entry_ItemsPurchased.get(), entry_ReceiptNumber.get(), entry_ItemsNumber.get()])
+    Items_details.append([entry_Name.get(), entry_ItemsPurchased.get(), entry_ItemsNumber.get(), entry_ReceiptNumber.get()])
     save_receipt_to_file(entry_ReceiptNumber.get())
     # Clear the entry boxes
     entry_Name.delete(0, 'end')
@@ -73,39 +72,14 @@ def print_items_details():
         counters['name_count'] = name_count
 
 
-def scrolled_receipt():
-    name_count = 0
-    while name_count < counters['total_entries']:
-        def submit_entry():
-            receipt_area.configure(state='normal')
-            receipt_area.insert(END, f"{insert_entry.get()}\n")
-            insert_entry.delete(0, "end")
-            receipt_area.configure(state='disabled')
-
-    button_insert = Button(text="Submit", command=submit_entry)
-    button_insert.grid(row=1)
-
-    # Title Label
-    Label(bottom, text="ScrolledText Widget Example", font=("Times New Roman", 15), background='green', foreground="white").grid(column=0, row=2)
-
-    # Creating scrolled text area
-
-    receipt_area = st.ScrolledText(root, width=30, height=8, font=("Times New Roman", 15))
-
-    receipt_area.grid(column=0, row=3, pady=10, padx=10)
-
-    # widget with Read only by disabling the state
-    receipt_area.configure(state='disabled')
-
-
 def save_receipt_to_file(receipt_number):
     if not os.path.exists('savedata'):
         os.makedirs('savedata')
     with open(f'savedata/{receipt_number}.txt', 'w') as file:
         file.write(f"Name: {entry_Name.get()}\n")
         file.write(f"Items Hired: {entry_ItemsPurchased.get()}\n")
-        file.write(f"Receipt Number: {entry_ReceiptNumber.get()}\n")
         file.write(f"Items Number: {entry_ItemsNumber.get()}\n")
+        file.write(f"Receipt Number: {entry_ReceiptNumber.get()}\n")
 
 
 # Delete a row from the list
@@ -174,20 +148,12 @@ def pin_window():
     # print(button_pin["state"])
     if str(button_pin['bg']) != 'gray':
         root.attributes('-topmost', True)
-        button_pin.configure(bg='gray')
+        button_pin.configure(bg='gray', text="Unpin Window")
     elif str(button_pin['bg']) == 'gray':
         root.attributes('-topmost', False)
-        button_pin.configure(bg='SeaGreen3')
+        button_pin.configure(bg='SeaGreen3', text="Pin Window")
 
 
-
-    # if button_pin["state"] == 'active':
-    #     root.attributes('-topmost', False)
-    #     button_pin.configure(state='normal')
-    # # Make the window jump above all
-    # else:
-    #     root.attributes('-topmost', True)
-    #     button_pin.configure(state='active')
 
 
 
@@ -243,15 +209,15 @@ def setup_widgets():
     # Bottom Frame
     bottom = Frame(left_column, bg='IndianRed3')
     bottom.place(relheight=0.4, relwidth=1, rely=0.6)
-    Label(bottom, font=fontNum1, text="Row", fg="white", bg="chocolate1", width=8, height=2, relief="ridge", bd=5).grid(
+    Label(bottom, font=fontNum1, text="Row", fg="white", bg="chocolate1", width=4, height=2, relief="ridge", bd=5).grid(
         column=0, row=0)
-    Label(bottom, font=fontNum1, text="Name", fg="white", bg="chocolate1", width=20, height=2, relief="ridge", bd=5).grid(
+    Label(bottom, font=fontNum1, text="Name", fg="white", bg="chocolate1", width=18, height=2, relief="ridge", bd=5).grid(
         column=1, row=0)
-    Label(bottom, font=fontNum1, text="Items Hired", fg="white", bg="chocolate1", width=16, height=2, relief="ridge",
+    Label(bottom, font=fontNum1, text="Items Hired", fg="white", bg="chocolate1", width=20, height=2, relief="ridge",
           bd=5).grid(column=2, row=0)
-    Label(bottom, font=fontNum1, text="Receipt Number", fg="white", bg="chocolate1", width=14, height=2, relief="ridge",
+    Label(bottom, font=fontNum1, text="Hired Amount", fg="white", bg="chocolate1", width=14, height=2, relief="ridge",
           bd=5).grid(column=3, row=0)
-    Label(bottom, font=fontNum1, text="Items Hired", fg="white", bg="chocolate1", width=16, height=2, relief="ridge",
+    Label(bottom, font=fontNum1, text="Receipt Number", fg="white", bg="chocolate1", width=14, height=2, relief="ridge",
           bd=5).grid(column=4, row=0)
 
 
@@ -265,12 +231,12 @@ def main():
 
 
     # Set the window icon
-    icon_path = r"Linux_logo.png"  # Ensure you have an 'icon.png' file in the same directory
+    icon_path = r"images/Linux_logo.png"  # Ensure you have an 'icon.png' file in the same directory
     icon = PhotoImage(file=icon_path)
     root.iconphoto(False, icon)
 
     # import gif image
-    gif_file = r'giphy.gif'
+    gif_file = r"images/giphy.gif"
     info = Image.open(gif_file)
 
     frames = info.n_frames  # number of frames
@@ -284,9 +250,9 @@ def main():
     fontNum4 = tkFont.Font(family="Cooper Black", size=18, weight='normal')
 
     #   import images
-    button_image = PhotoImage(file=r"printer.png")
-    quit_image = PhotoImage(file=r"quit button.png")
-    append_image = PhotoImage(file=r"append.png")
+    button_image = PhotoImage(file=r"images/printer.png")
+    quit_image = PhotoImage(file=r"images/quit button.png")
+    append_image = PhotoImage(file=r"images/append.png")
 
     # Start the GUI
     setup_widgets()
