@@ -6,6 +6,7 @@ from tkinter import *
 from tkinter import messagebox
 from tkinter.ttk import Combobox
 from PIL import Image
+from past.builtins import reload
 
 
 # Check if the inputs are valid
@@ -52,24 +53,7 @@ def append_item():
     entry_ItemsNumber.delete(0, 'end')
     counters['total_entries'] += 1
     entry_ItemsPurchased.set("Please choose an item name. ")
-    print_items_details()
 
-
-def print_items_details():
-    name_count = 0
-    while name_count < counters['total_entries']:
-        Label(bottom, text=name_count + 1, relief="sunken", font=("Helvetica", 10), fg="black", bg="IndianRed3").grid(
-            column=0, row=name_count + 1, padx=5, pady=5)
-        Label(bottom, text=(Items_details[name_count][0]), relief="sunken", font=fontNum1, fg="black",
-              bg="IndianRed3").grid(column=1, row=name_count + 1, padx=5, pady=5)
-        Label(bottom, text=(Items_details[name_count][1]), relief="sunken", font=fontNum1, fg="black",
-              bg="IndianRed3").grid(column=2, row=name_count + 1, padx=5, pady=5)
-        Label(bottom, text=(Items_details[name_count][2]), relief="sunken", font=fontNum1, fg="black",
-              bg="IndianRed3").grid(column=3, row=name_count + 1, padx=5, pady=5)
-        Label(bottom, text=(Items_details[name_count][3]), relief="sunken", font=fontNum1, fg="black",
-              bg="IndianRed3").grid(column=4, row=name_count + 1, padx=5, pady=5)
-        name_count += 1
-        counters['name_count'] = name_count
 
 
 def save_receipt_to_file(receipt_number):
@@ -97,8 +81,7 @@ def delete_row():
         Label(bottom, text="                 ", font=fontNum2, bg="IndianRed3").grid(column=2, row=name_count)
         Label(bottom, text="            ", font=fontNum2, bg="IndianRed3").grid(column=3, row=name_count)
         Label(bottom, text="            ", font=fontNum2, bg="IndianRed3").grid(column=4, row=name_count)
-        # Print all the items in the list
-        print_items_details()
+
 
 
 def delete_receipt_file(receipt_number):
@@ -133,7 +116,6 @@ def animation(current_frame=0):
 
     current_frame += 1
 
-
     if current_frame == frames:
         current_frame = 0
 
@@ -143,8 +125,8 @@ def animation(current_frame=0):
 
 def gif_image():
     global right_column, photoimage_objects, photoimage_objects_2, gif_label, gif_label_2
-    right_column = Frame(root, bg='gold2')
-    right_column.place(anchor=NW, relx=0, rely=0, relheight=0.15, relwidth=1)
+    right_column = Frame(main_f, bg='gold2')
+    right_column.place(anchor=NW, relx=0, rely=0, relheight=0.25, relwidth=1)
 
     photoimage_objects = []
     for i in range(frames):
@@ -152,21 +134,65 @@ def gif_image():
         photoimage_objects.append(obj)
 
     gif_label = Label(right_column, bg='gold2', image="")
-    gif_label.place(x=80, y=0)
+    gif_label.place(x=70, y=0)
 
     animation(current_frame=0)
 
 
+def receipt_window():
+    global receipt_win, bottom
+    try:
+        receipt_win.destroy()
+    except:
+        pass
+        
+    receipt_win = Toplevel(root)
+    receipt_win.geometry("750x670")
+    receipt_win.title("Purchase Details Window")
+    receipt_win.iconphoto(False, icon)
+    receipt_win.configure(bg='IndianRed3')
+    
+    name_count = 0
+    # Create the column headings with color
+    # Bottom Frame
+    bottom = Frame(receipt_win, bg='IndianRed3')
+    bottom.place(relheight=1, relwidth=1, rely=0)
+    Label(bottom, font=fontNum1, text="Row", fg="white", bg="chocolate1", width=4, height=2, relief="ridge", bd=5).grid(
+        column=0, row=0)
+    Label(bottom, font=fontNum1, text="Name", fg="white", bg="chocolate1", width=18, height=2, relief="ridge", bd=5).grid(
+        column=1, row=0)
+    Label(bottom, font=fontNum1, text="Items Hired", fg="white", bg="chocolate1", width=20, height=2, relief="ridge",
+          bd=5).grid(column=2, row=0)
+    Label(bottom, font=fontNum1, text="Hired Amount", fg="white", bg="chocolate1", width=14, height=2, relief="ridge",
+          bd=5).grid(column=3, row=0)
+    Label(bottom, font=fontNum1, text="Receipt Number", fg="white", bg="chocolate1", width=14, height=2, relief="ridge",
+          bd=5).grid(column=4, row=0)
+
+    # Add each item in the list into its own row
+    for name_count, item in enumerate(Items_details):
+        Label(bottom, text=(name_count + 1), relief="sunken", font=fontNum1, fg="black", bg="white").grid(
+            column=0, row=name_count + 1, padx=5, pady=5)
+        Label(bottom, text=item[0], relief="sunken", font=fontNum1, fg="black", bg="white").grid(
+            column=1, row=name_count + 1, padx=5, pady=5)
+        Label(bottom, text=item[1], relief="sunken", font=fontNum1, fg="black", bg="white").grid(
+            column=2, row=name_count + 1, padx=5, pady=5)
+        Label(bottom, text=item[2], relief="sunken", font=fontNum1, fg="black", bg="white").grid(
+            column=3, row=name_count + 1, padx=5, pady=5)
+        Label(bottom, text=item[3], relief="sunken", font=fontNum1, fg="black", bg="white").grid(
+            column=4, row=name_count + 1, padx=5, pady=5)
+    counters['name_count'] = name_count
+
 # Create the buttons and labels
 def setup_widgets():
-    global entry_Name, entry_ReceiptNumber, entry_ItemsNumber, delete_item, entry_ItemsPurchased, middle, bottom, button_pin
+    global entry_Name, entry_ReceiptNumber, entry_ItemsNumber, delete_item, entry_ItemsPurchased, middle, bottom,\
+        button_pin, main_f
     # Main columns
-    left_column = Frame(root)
-    left_column.place(anchor=NW, relx=0, rely=0.15, relheight=0.85, relwidth=1)
+    main_f = Frame(root)
+    main_f.place(anchor=NW, relx=0, rely=0, relheight=1, relwidth=1)
 
     # Create two frames to sort out all the widgets: Top one:
-    top = (Frame(left_column, bg='yellow'))
-    top.place(anchor=NW, relheight=0.3, relwidth=1)
+    top = (Frame(main_f, bg='yellow'))
+    top.place(anchor=NW, rely=0.25, relheight=0.35, relwidth=1)
     # Create all the labels, buttons, and entry boxes. Put them in the correct grid location
     Label(top, text="Name", bg="orange", font=fontNum1).grid(column=0, row=0, padx=20, pady=25, sticky=W)
     Label(top, text="Items Hired", bg="orange", font=fontNum1).grid(column=0, row=1, padx=20, pady=25, sticky=W)
@@ -190,43 +216,29 @@ def setup_widgets():
 
 
     # Middle Frame:
-    middle = Frame(left_column, bg='orange')
-    middle.place(relheight=0.3, relwidth=1, rely=0.3)
+    middle = Frame(main_f, bg='orange')
+    middle.place(relheight=0.4, relwidth=1, rely=0.6)
     button_pin = Button(middle, text="Pin Window", font=fontNum1, width=20, height=1, bg='SeaGreen3', bd=10,
                         relief='raised', command=pin_window, state='normal', compound=LEFT)
     button_pin.grid(column=0, row=0, padx=10, sticky='NW')
-    Button(middle, text="Submit", font=fontNum1, width=190, height=60, bg='OliveDrab1', bd=10, relief='raised',
-           image=button_image, compound=LEFT, command=check_inputs).grid(column=1, row=0, padx=10, sticky='NW')
-    Button(middle, text="QUIT", fg='red', font=fontNum1, width=15, height=1, bg='yellow2', bd=10, relief='raised',
+    Button(middle, text="Submit", font=fontNum1, width=200, height=60, bg='OliveDrab1', bd=10, relief='raised',
+           image=button_image, compound=LEFT, command=check_inputs).grid(column=1, row=0, padx=20, sticky='NW')
+    Button(middle, text="QUIT", fg='red', font=fontNum1, width=20, height=1, bg='yellow2', bd=10, relief='raised',
            command=quit).grid(column=2, row=0, padx=10, sticky='NW')
-    Button(middle, text="Delete Row", font=fontNum1, height=1, width=19, command=delete_row, bg='red', bd=10).grid(
+    Button(middle, text="Delete Row", font=fontNum1, height=1, width=20, command=delete_row, bg='red', bd=10).grid(
         column=0, row=1, padx=10, pady=12, sticky=W)
     delete_item = Entry(middle, width=23)
     delete_item.grid(column=1, row=1, sticky=W)
-
-
-    # Create the column headings with color
-    # Bottom Frame
-    bottom = Frame(left_column, bg='IndianRed3')
-    bottom.place(relheight=0.4, relwidth=1, rely=0.6)
-    Label(bottom, font=fontNum1, text="Row", fg="white", bg="chocolate1", width=4, height=2, relief="ridge", bd=5).grid(
-        column=0, row=0)
-    Label(bottom, font=fontNum1, text="Name", fg="white", bg="chocolate1", width=18, height=2, relief="ridge", bd=5).grid(
-        column=1, row=0)
-    Label(bottom, font=fontNum1, text="Items Hired", fg="white", bg="chocolate1", width=20, height=2, relief="ridge",
-          bd=5).grid(column=2, row=0)
-    Label(bottom, font=fontNum1, text="Hired Amount", fg="white", bg="chocolate1", width=14, height=2, relief="ridge",
-          bd=5).grid(column=3, row=0)
-    Label(bottom, font=fontNum1, text="Receipt Number", fg="white", bg="chocolate1", width=14, height=2, relief="ridge",
-          bd=5).grid(column=4, row=0)
+    Button(middle, text="Print Details", font=fontNum1, height=1, width=20, bg='PaleGreen2', bd=10, relief='raised',
+           command=receipt_window).grid(column=2, row=1, padx=10, pady=12)
 
 
 
 def main():
     global root, fontNum1, fontNum2, fontNum3, fontNum4, button_image, quit_image, append_image, gif_file, gif_file_2,\
-        info, info_2, frames, frames_2, bg_image
+        info, info_2, frames, frames_2, bg_image, icon
     root = Tk()
-    root.geometry("750x1000")
+    root.geometry("750x650")
     root.title("*" * 50 + "Party Purchase" + "*" * 50)
     root.configure(bg='lightblue')
     root.wm_attributes("-transparentcolor", "#add123")
@@ -241,7 +253,7 @@ def main():
     gif_file = r"images/giphy3.1.gif"
     info = Image.open(gif_file)
     frames = info.n_frames  # number of frames
-    gif_image()
+
 
     # define fonts
     fontNum1 = tkFont.Font(family="Agency FB", size=20, weight="bold")
@@ -256,6 +268,7 @@ def main():
 
     # Start the GUI
     setup_widgets()
+    gif_image()
 
     messagebox.showinfo(title="Tips(1/3):", message="To record purchases by using this program, input all the required"
                                                     " information, then click the button 'Append Details'. To print"

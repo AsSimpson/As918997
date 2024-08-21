@@ -250,7 +250,7 @@ def appenditems_page():
     add_details_window.geometry("530x440")
 
     # bg_image = PhotoImage(file=r"output-onlinepngtools (2).png")
-    bg_image = PhotoImage(file=r"party_image.png")
+    bg_image = PhotoImage(file=r"images/party_image.png")
     bg_label = Label(add_details_window, image=bg_image)
     bg_label.place(x=0, y=0, relwidth=1, relheight=1)
 
@@ -280,7 +280,7 @@ def appenditems_page():
     entry_hire_days.grid(column=1, row=3)
 
     # Load image for the button
-    append_image = PhotoImage(file=r"printer.png")
+    append_image = PhotoImage(file=r"images/printer.png")
     append_button = Button(add_details_window, text="Append Details", font=("Arial", 10), fg='blue', bg='lightgreen',
                            relief='ridge', bd=7, command=check_inputs, width=145, image=append_image, compound="right")
     append_button.grid(column=1, row=5, padx=20, pady=20)
@@ -296,7 +296,7 @@ def return_page():
     delete_details_window.iconphoto(False, icon)
     delete_details_window.geometry("500x400")
 
-    bg_image = PhotoImage(file=r"party_image.png")
+    bg_image = PhotoImage(file=r"images/party_image.png")
     bg_label = Label(delete_details_window, image=bg_image)
     bg_label.place(x=0, y=0, relwidth=1, relheight=1)
 
@@ -324,7 +324,7 @@ def main():
     Main_win.geometry("500x550")
     Main_win.title("John's Item Hire Program")
 
-    icon_path = r"Linux_logo.png"
+    icon_path = r"images/Linux_logo.png"
     icon = PhotoImage(file=icon_path)
     Main_win.iconphoto(False, icon)
 
@@ -333,7 +333,7 @@ def main():
     top_frame.grid(row=0, column=0, sticky="nsew")
     top_frame.grid_propagate(False)
 
-    bg_image = PhotoImage(file=r"Linux_logo.png")
+    bg_image = PhotoImage(file=r"images/Linux_logo.png")
     bg_label = Label(top_frame, image=bg_image)
     bg_label.place(x=0, y=0, relwidth=1, relheight=1)
 
