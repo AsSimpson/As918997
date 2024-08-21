@@ -115,35 +115,6 @@ def random_receipt():
     entry_ReceiptNumber.insert(0, str(randNum))
 
 
-def animation(current_frame=0):
-    global loop
-    image = photoimage_objects[current_frame]
-
-    gif_label.configure(image=image)
-    current_frame = current_frame + 1
-
-    if current_frame == frames:
-        current_frame = 0
-
-    loop = right_column.after(50, lambda: animation(current_frame))
-
-
-def gif_image():
-    global right_column, photoimage_objects, gif_label
-    right_column = Frame(root)
-    right_column.place(anchor=NW, relx=0.6, relheight=1, relwidth=0.4)
-
-    photoimage_objects = []
-    for i in range(frames):
-        obj = PhotoImage(file=gif_file, format=f"gif -index {i}")
-        photoimage_objects.append(obj)
-
-    gif_label = Label(right_column, image="")
-    gif_label.place(anchor=NW, x=0, y=0)
-
-    animation(current_frame=0)
-
-
 def pin_window():
     # print(button_pin["state"])
     if str(button_pin['bg']) != 'gray':
@@ -154,7 +125,36 @@ def pin_window():
         button_pin.configure(bg='SeaGreen3', text="Pin Window")
 
 
+def animation(current_frame=0):
+    global loop, loop_2
+    image = photoimage_objects[current_frame]
 
+    gif_label.configure(image=image)
+
+    current_frame += 1
+
+
+    if current_frame == frames:
+        current_frame = 0
+
+    loop = right_column.after(50, lambda: animation(current_frame))
+    # loop_2 = right_column.after(50, lambda: animation(current_frame))
+
+
+def gif_image():
+    global right_column, photoimage_objects, photoimage_objects_2, gif_label, gif_label_2
+    right_column = Frame(root, bg='gold2')
+    right_column.place(anchor=NW, relx=0, rely=0, relheight=0.15, relwidth=1)
+
+    photoimage_objects = []
+    for i in range(frames):
+        obj = PhotoImage(file=gif_file, format=f"gif -index {i}")
+        photoimage_objects.append(obj)
+
+    gif_label = Label(right_column, bg='gold2', image="")
+    gif_label.place(x=80, y=0)
+
+    animation(current_frame=0)
 
 
 # Create the buttons and labels
@@ -162,7 +162,7 @@ def setup_widgets():
     global entry_Name, entry_ReceiptNumber, entry_ItemsNumber, delete_item, entry_ItemsPurchased, middle, bottom, button_pin
     # Main columns
     left_column = Frame(root)
-    left_column.place(anchor=NW, relx=0, rely=0, relheight=1, relwidth=0.6)
+    left_column.place(anchor=NW, relx=0, rely=0.15, relheight=0.85, relwidth=1)
 
     # Create two frames to sort out all the widgets: Top one:
     top = (Frame(left_column, bg='yellow'))
@@ -223,11 +223,13 @@ def setup_widgets():
 
 
 def main():
-    global root, fontNum1, fontNum2, fontNum3, fontNum4, button_image, quit_image, append_image, gif_file, info, frames
+    global root, fontNum1, fontNum2, fontNum3, fontNum4, button_image, quit_image, append_image, gif_file, gif_file_2,\
+        info, info_2, frames, frames_2, bg_image
     root = Tk()
-    root.geometry("1400x700")
+    root.geometry("750x1000")
     root.title("*" * 50 + "Party Purchase" + "*" * 50)
     root.configure(bg='lightblue')
+    root.wm_attributes("-transparentcolor", "#add123")
 
 
     # Set the window icon
@@ -236,11 +238,9 @@ def main():
     root.iconphoto(False, icon)
 
     # import gif image
-    gif_file = r"images/giphy.gif"
+    gif_file = r"images/giphy3.1.gif"
     info = Image.open(gif_file)
-
     frames = info.n_frames  # number of frames
-
     gif_image()
 
     # define fonts
