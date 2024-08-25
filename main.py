@@ -16,6 +16,18 @@ def show_error(object_name):
     object_name.configure(bg="firebrick1")
     clicked = object_name.bind('<Button-1>', click)
 
+
+def preview(widget_name):
+    #Define a function to clear the content of the text widget
+    def click(event):
+      widget_name.delete(0, END)
+      widget_name.configure(fg='black')
+      widget_name.unbind('<Button-1>', clicked)
+    widget_name.configure(fg='red')
+    widget_name.insert(0, "Enter Receipt Number here. ")
+    clicked = widget_name.bind('<Button-1>', click)
+
+
 # Check if the inputs are valid
 def check_inputs():
     input_check = 0
@@ -69,6 +81,8 @@ def append_item():
     entry_ItemsNumber.delete(0, 'end')
     counters['total_entries'] += 1
     entry_ItemsPurchased.set("Please choose an item name. ")
+
+    print_details.flash()
     try:
         receipt_win.destroy()
         receipt_window()
@@ -89,20 +103,20 @@ def save_receipt_to_file(receipt_number):
 
 
 # Delete a row from the list
-def delete_row():
-    row_index = int(delete_item.get()) - 1
-    if 0 <= row_index < counters['total_entries']:
-        delete_receipt_file(Items_details[row_index][2])
-        del Items_details[row_index]
-        counters['total_entries'] -= 1
-        name_count = counters['name_count']
-        delete_item.delete(0, 'end')
-        # Clear the last item displayed on the GUI
-        Label(bottom, text="    ", font=fontNum2, bg="IndianRed3").grid(column=0, row=name_count)
-        Label(bottom, text="                   ", font=fontNum2, bg="IndianRed3").grid(column=1, row=name_count)
-        Label(bottom, text="                 ", font=fontNum2, bg="IndianRed3").grid(column=2, row=name_count)
-        Label(bottom, text="            ", font=fontNum2, bg="IndianRed3").grid(column=3, row=name_count)
-        Label(bottom, text="            ", font=fontNum2, bg="IndianRed3").grid(column=4, row=name_count)
+# def delete_row():
+    # row_index = int(delete_item.get()) - 1
+    # if 0 <= row_index < counters['total_entries']:
+    #     delete_receipt_file(Items_details[row_index][2])
+    #     del Items_details[row_index]
+    #     counters['total_entries'] -= 1
+    #     name_count = counters['name_count']
+    #     delete_item.delete(0, 'end')
+    #     # Clear the last item displayed on the GUI
+    #     Label(bottom, text="    ", font=fontNum2, bg="IndianRed3").grid(column=0, row=name_count)
+    #     Label(bottom, text="                   ", font=fontNum2, bg="IndianRed3").grid(column=1, row=name_count)
+    #     Label(bottom, text="                 ", font=fontNum2, bg="IndianRed3").grid(column=2, row=name_count)
+    #     Label(bottom, text="            ", font=fontNum2, bg="IndianRed3").grid(column=3, row=name_count)
+    #     Label(bottom, text="            ", font=fontNum2, bg="IndianRed3").grid(column=4, row=name_count)
 
 
 
@@ -111,6 +125,18 @@ def delete_receipt_file(receipt_number):
     if os.path.exists(file_path):
         os.remove(file_path)
 
+def delete_receipt():
+    receipt_number = delete_item.get()
+    for item in Items_details:
+        if item[3] == receipt_number:
+            Items_details.remove(item)
+            counters['total_entries'] -= 1
+            delete_receipt_file(receipt_number)
+            delete_item.delete(0, 'end')
+            receipt_window()
+            return
+    messagebox.showerror(title="error", message="Receipt number not found")
+    show_error(delete_item)
 
 # Random receipt number generator
 def random_receipt():
@@ -207,7 +233,7 @@ def receipt_window():
 # Create the buttons and labels
 def setup_widgets():
     global entry_Name, entry_ReceiptNumber, entry_ItemsNumber, delete_item, entry_ItemsPurchased, middle, bottom,\
-        button_pin, main_f
+        button_pin, print_details, main_f
     # Main columns
     main_f = Frame(root)
     main_f.place(anchor=NW, relx=0, rely=0, relheight=1, relwidth=1)
@@ -247,12 +273,14 @@ def setup_widgets():
            image=button_image, compound=LEFT, command=check_inputs).grid(column=1, row=0, padx=20, sticky='NW')
     Button(middle, text="QUIT", fg='red', font=fontNum1, width=20, height=1, bg='yellow2', bd=10, relief='raised',
            command=quit).grid(column=2, row=0, padx=10, sticky='NW')
-    Button(middle, text="Delete Row", font=fontNum1, height=1, width=20, command=delete_row, bg='red', bd=10).grid(
+    Button(middle, text="Delete", font=fontNum1, height=1, width=20, command=delete_receipt, bg='red', bd=10).grid(
         column=0, row=1, padx=10, pady=12, sticky=W)
-    delete_item = Entry(middle, width=23)
+    delete_item = Entry(middle, width=40)
+    preview(delete_item)
     delete_item.grid(column=1, row=1, sticky=W)
-    Button(middle, text="Print Details", font=fontNum1, height=1, width=20, bg='PaleGreen2', bd=10, relief='raised',
-           command=receipt_window).grid(column=2, row=1, padx=10, pady=12)
+    print_details = Button(middle, text="Details Window", font=fontNum1, height=1, width=20, bg='PaleGreen2', bd=10, relief='raised',
+           command=receipt_window)
+    print_details.grid(column=2, row=1, padx=10, pady=12)
 
 
 
@@ -263,7 +291,6 @@ def main():
     root.geometry("750x650")
     root.title("*" * 50 + "Party Purchase" + "*" * 50)
     root.configure(bg='lightblue')
-    root.wm_attributes("-transparentcolor", "#add123")
 
 
     # Set the window icon
@@ -292,14 +319,13 @@ def main():
     setup_widgets()
     gif_image()
 
-    messagebox.showinfo(title="Tips(1/3):", message="To record purchases by using this program, input all the required"
-                                                    " information, then click the button 'Append Details'. To print"
-                                                    " the information, please click the button 'Print Details. ")
-    messagebox.showinfo(title="Tips(2/3):", message="Having trouble with thinking about receipt numbers all day? "
+    messagebox.showinfo(title="Tips(1/2):", message="To record purchases by using this program, input all the required"
+                                                    " information, then click the button 'Submit'. To print"
+                                                    " the information, please click the button 'Details Window. ")
+    messagebox.showinfo(title="Tips(2/2):", message="Having trouble with thinking about receipt numbers all day? "
                                                     "You can actually generate a random receipt number by click the"
                                                     " button 'Random Number' beside 'Receipt Number' entry box. ")
-    messagebox.showinfo(title="Tip(3/3):", message="Need a help? You can check the instructions of this program by"
-                                                   " clicking 'Help' in any time.")
+
     root.mainloop()
 
 
