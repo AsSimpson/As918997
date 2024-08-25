@@ -69,6 +69,12 @@ def append_item():
     entry_ItemsNumber.delete(0, 'end')
     counters['total_entries'] += 1
     entry_ItemsPurchased.set("Please choose an item name. ")
+    try:
+        receipt_win.destroy()
+        receipt_window()
+    except:
+        pass
+
 
 
 
@@ -112,10 +118,10 @@ def random_receipt():
     if len(entry_ReceiptNumber.get()) != 0:
         entry_ReceiptNumber.delete(0, "end")
     entry_ReceiptNumber.insert(0, str(randNum))
+    entry_ReceiptNumber.configure(bg="white")
 
 
 def pin_window():
-    # print(button_pin["state"])
     if str(button_pin['bg']) != 'gray':
         root.attributes('-topmost', True)
         button_pin.configure(bg='gray', text="Unpin Window")
@@ -163,7 +169,7 @@ def receipt_window():
         pass
         
     receipt_win = Toplevel(root)
-    receipt_win.geometry("750x670")
+    receipt_win.geometry("760x670")
     receipt_win.title("Purchase Details Window")
     receipt_win.iconphoto(False, icon)
     receipt_win.configure(bg='IndianRed3')
