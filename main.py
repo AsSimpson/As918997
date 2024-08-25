@@ -1,45 +1,61 @@
 import os
-import time
 import random
 import tkinter.font as tkFont
 from tkinter import *
 from tkinter import messagebox
 from tkinter.ttk import Combobox
 from PIL import Image
-from past.builtins import reload
+from Simpson_library import GradientFrame
 
+def show_error(object_name):
+    # Define a function to clear the content of the text widget
+    def click(event):
+        object_name.delete(0, END)
+        object_name.configure(bg="white")
+        object_name.unbind('<Button-1>', clicked)
+    object_name.configure(bg="firebrick1")
+    clicked = object_name.bind('<Button-1>', click)
 
 # Check if the inputs are valid
 def check_inputs():
     input_check = 0
-    # Check that Name is not blank, set error text if blank
-    if len(entry_Name.get()) == 0:
-        messagebox.showerror(title="error", message="Input NAME please. ")
+
+    # Check if Name is blank, set error text if blank
+    if len(entry_Name.get()) ==0 or len(entry_Name.get()) > 10 or not entry_Name.get().isalpha():
+        show_error(entry_Name)
+        messagebox.showerror(title="error", message="Name required, name must be consisted by letters and less than 10 letters")
         input_check = 1
-    # Check if any item is selected, set error text if blank
+    # Check if the combobox is still in default
     if entry_ItemsPurchased.get() == "Please choose an item name. ":
         messagebox.showerror(title="error", message="Choose a PURCHASED ITEM NAME please. ")
         input_check = 1
-    # Check that Receipt Number is not blank and between 2 and 15, set error text if invalid
-    # Bug with item and receipt number validation check
+    # Check the validation of receipt number(range: 0-2000 include 0 & 2000)
     if entry_ReceiptNumber.get().isdigit():
-        if int(entry_ReceiptNumber.get()) < 0 or int(entry_ReceiptNumber.get()) >= 2000:
-            messagebox.showerror(title="error", message="Input a valid RECEIPT NUMBER please. ")
+        if int(entry_ReceiptNumber.get()) <= 0 or int(entry_ReceiptNumber.get()) >= 2000:
+            show_error(entry_ReceiptNumber)
+            messagebox.showerror(title="error", message="Input a valid RECEIPT NUMBER please. The receipt number should "
+                                                        "be a integer which greater that 0, less than 2001. ")
             input_check = 1
     else:
-        messagebox.showerror(title="error", message="RECEIPT NUMBER should be a number. ")
+        show_error(entry_ReceiptNumber)
+        messagebox.showerror(title="error", message="RECEIPT NUMBER should be an integer. ")
         input_check = 1
     # Check that Items Number is not blank and between 0 and 30, set error text if invalid
     if entry_ItemsNumber.get().isdigit():
-        if int(entry_ItemsNumber.get()) < 0 or int(entry_ItemsNumber.get()) > 100:
-            messagebox.showerror(title="error", message="Input a valid RECEIPT NUMBER please. ")
+        if int(entry_ItemsNumber.get()) <= 0 or int(entry_ItemsNumber.get()) > 100:
+            show_error(entry_ItemsNumber)
+            messagebox.showerror(title="error", message="RECEIPT NUMBER should be a integer which greater than 0, less than 101. ")
             input_check = 1
     else:
-        messagebox.showerror(title="error", message="RECEIPT NUMBER should be a number. ")
+        show_error(entry_ItemsNumber)
+        messagebox.showerror(title="error", message="Input a valid RECEIPT NUMBER please. ")
         input_check = 1
 
     if input_check == 0:
+        messagebox.showinfo("Receipt", f"Details appended successfully! Your receipt number is {str(entry_ReceiptNumber.get())}")
         append_item()
+
+
 
 
 def append_item():
@@ -119,21 +135,21 @@ def animation(current_frame=0):
     if current_frame == frames:
         current_frame = 0
 
-    loop = right_column.after(50, lambda: animation(current_frame))
-    # loop_2 = right_column.after(50, lambda: animation(current_frame))
+    loop = title_frame.after(50, lambda: animation(current_frame))
+    # loop_2 = title_frame.after(50, lambda: animation(current_frame))
 
 
 def gif_image():
-    global right_column, photoimage_objects, photoimage_objects_2, gif_label, gif_label_2
-    right_column = Frame(main_f, bg='gold2')
-    right_column.place(anchor=NW, relx=0, rely=0, relheight=0.25, relwidth=1)
+    global title_frame, photoimage_objects, photoimage_objects_2, gif_label, gif_label_2
+    title_frame = Frame(main_f, bg='gold2')
+    title_frame.place(anchor=NW, relx=0, rely=0, relheight=0.25, relwidth=1)
 
     photoimage_objects = []
     for i in range(frames):
         obj = PhotoImage(file=gif_file, format=f"gif -index {i}")
         photoimage_objects.append(obj)
 
-    gif_label = Label(right_column, bg='gold2', image="")
+    gif_label = Label(title_frame, bg='gold2', image="")
     gif_label.place(x=70, y=0)
 
     animation(current_frame=0)
@@ -198,7 +214,7 @@ def setup_widgets():
     Label(top, text="Items Hired", bg="orange", font=fontNum1).grid(column=0, row=1, padx=20, pady=25, sticky=W)
     Label(top, text="Receipt Number", bg="orange", font=fontNum1).grid(column=2, row=0, padx=20, pady=25, sticky=W)
     Button(top, text="Random Number", bg="tomato", bd=5, font=fontNum3, height=1, command=random_receipt).grid(column=5, row=0, pady=30, sticky='NW')
-    Label(top, text="Items Number", bg="orange", font=fontNum1).grid(column=2, row=1, padx=20, pady=25, sticky=W)
+    Label(top, text="Hired Amount", bg="orange", font=fontNum1).grid(column=2, row=1, padx=20, pady=25, sticky=W)
     
     # Get purchase information from user input
     entry_Name = Entry(top, width=23)
